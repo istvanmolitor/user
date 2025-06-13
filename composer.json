@@ -1,0 +1,27 @@
+{
+    "name": "molitor/user",
+    "description": "User",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Molitor István",
+            "email": "istvanmolitor@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "molitor/admin": "dev-main"
+    },
+    "repositories": [
+        {
+            "url": "https://gitlab.com/molitor/admin.git",
+            "type": "git"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Molitor\\User\\": "src/"
+        }
+    }
+}
