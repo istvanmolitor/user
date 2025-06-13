@@ -2,11 +2,10 @@
 
 namespace Molitor\User\Http\Controllers\Auth;
 
-use Molitor\Admin\Http\Controllers\Admin\BaseApiController;
 use Molitor\User\Http\Requests\LoginRequest;
 use Molitor\User\Services\AuthService;
 
-class LoginController extends BaseApiController
+class LoginController
 {
     public function __construct(
         private AuthService $authService

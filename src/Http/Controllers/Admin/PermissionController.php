@@ -2,13 +2,12 @@
 
 namespace Molitor\User\Http\Controllers\Admin;
 
-use Molitor\Admin\Http\Controllers\Admin\AdminController;
 use Molitor\User\Models\Permission;
 use Molitor\User\Models\UserGroup;
 use Molitor\User\Repositories\UserGroupPermissionRepositoryInterface;
 use Molitor\User\Services\DataTable\PermissionDataTable;
 
-class PermissionController extends AdminController
+class PermissionController
 {
     public function __construct(
         private UserGroupPermissionRepositoryInterface $userGroupPermissionRepository

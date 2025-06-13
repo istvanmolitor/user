@@ -2,14 +2,13 @@
 
 namespace Molitor\User\Http\Controllers\Admin;
 
-use Molitor\Admin\Http\Controllers\Admin\AdminController;
 use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
 use Molitor\User\Repositories\MembershipRepositoryInterface;
 use Molitor\User\Services\DataTable\UserDataTable;
 use Inertia\Inertia;
 
-class UserController extends AdminController
+class UserController
 {
     public function __construct(
         private MembershipRepositoryInterface $membershipRepository

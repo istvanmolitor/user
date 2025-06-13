@@ -3,7 +3,6 @@
 namespace Molitor\User\Http\Controllers\Api;
 
 use Illuminate\Support\Facades\Hash;
-use Molitor\Admin\Http\Controllers\Admin\BaseApiController;
 use Molitor\User\Http\Requests\UserCreateRequest;
 use Molitor\User\Http\Requests\UserRequest;
 use Molitor\User\Http\Resources\UserFormResource;
@@ -13,7 +12,7 @@ use Molitor\User\Repositories\MembershipRepositoryInterface;
 use Molitor\User\Repositories\UserGroupRepositoryInterface;
 use Molitor\User\Repositories\UserRepositoryInterface;
 
-class UserApiController extends BaseApiController
+class UserApiController
 {
     public function __construct(
         private UserRepositoryInterface       $userRepository,

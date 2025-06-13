@@ -2,7 +2,6 @@
 
 namespace Molitor\User\Http\Controllers\Api;
 
-use Molitor\Admin\Http\Controllers\Admin\BaseApiController;
 use Molitor\User\Http\Requests\UserGroupRequest;
 use Molitor\User\Http\Resources\UserGroupFormResource;
 use Molitor\User\Http\Resources\UserGroupResource;
@@ -11,7 +10,7 @@ use Molitor\User\Repositories\PermissionRepositoryInterface;
 use Molitor\User\Repositories\UserGroupPermissionRepositoryInterface;
 use Molitor\User\Repositories\UserGroupRepositoryInterface;
 
-class UserGroupApiController extends BaseApiController
+class UserGroupApiController
 {
     public function __construct(
         private UserGroupPermissionRepositoryInterface $userGroupPermissionRepository,

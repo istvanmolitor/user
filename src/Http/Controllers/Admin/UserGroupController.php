@@ -2,11 +2,10 @@
 
 namespace Molitor\User\Http\Controllers\Admin;
 
-use Molitor\Admin\Http\Controllers\Admin\AdminController;
 use Molitor\User\Models\UserGroup;
 use Molitor\User\Services\DataTable\UserGroupDataTable;
 
-class UserGroupController extends AdminController
+class UserGroupController
 {
     public function index()
     {
