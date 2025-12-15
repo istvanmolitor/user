@@ -41,6 +41,15 @@ class UserResource extends Resource
     {
         return $schema
             ->schema([
+                Forms\Components\Toggle::make('email_verified_at')
+                    ->label(__('Ellenőrizve'))
+                    ->inline(false)
+                    ->afterStateHydrated(function (Forms\Components\Toggle $component, $state): void {
+                        $component->state(! empty($state));
+                    })
+                    ->dehydrateStateUsing(function ($state) {
+                        return $state ? now() : null;
+                    }),
                 Forms\Components\Select::make('userGroups')
                     ->label(__('user::user.title'))
                     ->multiple()
