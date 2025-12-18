@@ -18,7 +18,8 @@ class UserSeeder extends Seeder
         $aclService->createUserGroup('admin', 'Mindenhez van joga.');
         $aclService->createUserGroup('user', 'Egyszerű felhasználó', true);
 
-        $aclService->createUser('admin@example.com', 'admin', 'admin', ['admin', 'user']);
+        $user = $aclService->createUser('admin@example.com', 'admin', 'admin', ['admin', 'user']);
+        $user->markEmailAsVerified();
 
         $aclService->createPermission('permission', 'Jogosultságok', 'admin');
     }
