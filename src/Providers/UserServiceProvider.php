@@ -26,7 +26,7 @@ class UserServiceProvider extends ServiceProvider
 
         Gate::define(
             'acl',
-            function (User $user, $permission) {
+            function ($user, $permission) {
                 /** @var Acl $acl */
                 $acl = app('acl');
                 return $acl->hasPermission($permission);
