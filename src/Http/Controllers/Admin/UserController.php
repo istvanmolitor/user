@@ -1,12 +1,12 @@
 <?php
 namespace Molitor\User\Http\Controllers\Admin;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Molitor\Admin\Controllers\BaseAdminController;
 use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
-class UserController extends Controller
+class UserController extends BaseAdminController
 {
     public function index(Request $request): Response
     {

@@ -2,14 +2,14 @@
 
 namespace Molitor\User\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Molitor\Admin\Controllers\BaseAdminController;
 use Molitor\User\Models\Permission;
 use Molitor\User\Models\UserGroup;
 
-class UserGroupController extends Controller
+class UserGroupController extends BaseAdminController
 {
     public function index(Request $request): Response
     {
