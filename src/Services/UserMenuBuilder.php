@@ -11,6 +11,10 @@ class UserMenuBuilder extends MenuBuilder
 {
     public function init(Menu $menu, string $name, array $params = []): void
     {
+        if ($name !== 'admin') {
+            return;
+        }
+
         $usersGroup = $menu->addItem(__('user::common.group'), null);
         $usersGroup->setName('users');
         $usersGroup->setIcon('users');
