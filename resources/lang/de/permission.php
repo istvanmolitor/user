@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Berechtigungen',
+    'list' => 'Berechtigungen',
     'create' => 'Neue Berechtigung',
     'edit' => 'Berechtigung bearbeiten',
     'form' => [

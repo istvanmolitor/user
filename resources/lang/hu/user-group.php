@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Felhasználói csoportok',
+    'list' => 'Felhasználói csoportok',
     'create' => 'Új felhasználói csoport',
     'edit' => 'Felhasználói csoport szerkesztése',
     'form' => [

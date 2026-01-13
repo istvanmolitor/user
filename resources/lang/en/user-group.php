@@ -2,6 +2,7 @@
 
 return [
     'title' => 'User groups',
+    'list' => 'User groups',
     'create' => 'New user group',
     'edit' => 'Edit user group',
     'form' => [

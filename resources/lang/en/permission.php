@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Permissions',
+    'list' => 'Permissions',
     'create' => 'New permission',
     'edit' => 'Edit permission',
     'form' => [

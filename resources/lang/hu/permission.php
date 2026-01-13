@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Jogkörök',
+    'list' => 'Jogkörök',
     'create' => 'Új jogkör',
     'edit' => 'Jogkör szerkesztése',
     'form' => [

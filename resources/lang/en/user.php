@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Users',
+    'list' => 'Users',
     'create' => 'New user',
     'edit' => 'Edit user',
     'form' => [

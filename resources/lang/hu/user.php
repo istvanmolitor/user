@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Felhasználók',
+    'list' => 'Felhasználók',
     'create' => 'Új felhasználó',
     'edit' => 'Felhasználó szerkesztése',
     'form' => [

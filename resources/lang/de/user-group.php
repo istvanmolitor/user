@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Benutzergruppen',
+    'list' => 'Benutzergruppen',
     'create' => 'Neue Benutzergruppe',
     'edit' => 'Benutzergruppe bearbeiten',
     'form' => [
