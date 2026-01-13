@@ -17,4 +17,9 @@ return [
         'created' => 'Létrehozva',
         'is_default' => 'Alapértelmezett',
     ],
+    'messages' => [
+        'created' => 'Felhasználói csoport sikeresen létrehozva',
+        'updated' => 'Felhasználói csoport sikeresen frissítve',
+        'deleted' => 'Felhasználói csoport sikeresen törölve',
+    ],
 ];

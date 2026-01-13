@@ -17,4 +17,9 @@ return [
         'created' => 'Létrehozva',
         'user_groups' => 'Felhasználói csoportok',
     ],
+    'messages' => [
+        'created' => 'Felhasználó sikeresen létrehozva',
+        'updated' => 'Felhasználó sikeresen frissítve',
+        'deleted' => 'Felhasználó sikeresen törölve',
+    ],
 ];

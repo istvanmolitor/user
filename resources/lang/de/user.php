@@ -17,4 +17,9 @@ return [
         'created' => 'Erstellt',
         'user_groups' => 'Benutzergruppen',
     ],
+    'messages' => [
+        'created' => 'Benutzer erfolgreich erstellt',
+        'updated' => 'Benutzer erfolgreich aktualisiert',
+        'deleted' => 'Benutzer erfolgreich gelöscht',
+    ],
 ];

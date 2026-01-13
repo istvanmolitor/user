@@ -15,4 +15,9 @@ return [
         'description' => 'Leírás',
         'userGroups' => 'Felhasználói csoportok',
     ],
+    'messages' => [
+        'created' => 'Jogkör sikeresen létrehozva',
+        'updated' => 'Jogkör sikeresen frissítve',
+        'deleted' => 'Jogkör sikeresen törölve',
+    ],
 ];

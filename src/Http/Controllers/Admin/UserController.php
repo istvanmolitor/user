@@ -79,8 +79,7 @@ class UserController extends BaseAdminController
         if (isset($validated['user_groups'])) {
             $user->userGroups()->sync($validated['user_groups']);
         }
-        return redirect()->route('user.admin.users.index')
-            ->with('success', __('user::user.messages.updated'));
+        return back()->with('success', __('user::user.messages.updated'));
     }
     public function destroy(User $user)
     {

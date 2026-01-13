@@ -88,8 +88,7 @@ class UserGroupController extends BaseAdminController
             $userGroup->permissions()->sync($validated['permissions']);
         }
 
-        return redirect()->route('user.admin.user-groups.index')
-            ->with('success', __('user::user_group.messages.updated'));
+        return back()->with('success', __('user::user_group.messages.updated'));
     }
 
     public function destroy(UserGroup $userGroup)
