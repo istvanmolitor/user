@@ -16,4 +16,9 @@ return [
         'created' => 'Created',
         'is_default' => 'Default',
     ],
+    'messages' => [
+        'created' => 'User group created successfully',
+        'updated' => 'User group updated successfully',
+        'deleted' => 'User group deleted successfully',
+    ],
 ];

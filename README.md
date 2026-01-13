@@ -1,4 +1,92 @@
-# User csomag
+# User Package
+
+This package provides user management functionality with both Filament and Inertia Vue admin interfaces.
+
+## Features
+
+- User management
+- User groups with permissions
+- Permission management
+- ACL (Access Control List) system
+- Dual admin interfaces:
+  - Filament admin (backend)
+  - Inertia Vue admin (frontend)
+
+## Installation
+
+The package is automatically loaded via the service provider.
+
+### Publishing Vue Components
+
+To use the Inertia Vue admin, publish the Vue components:
+
+```bash
+php artisan vendor:publish --tag=user-views
+```
+
+Or manually copy:
+
+```bash
+cp -r packages/user/resources/js/* resources/js/pages/User/
+```
+
+## Routes
+
+The Inertia admin routes are available under `/admin/user`:
+
+- `/admin/user/users` - User management
+- `/admin/user/user-groups` - User group management
+- `/admin/user/permissions` - Permission management
+
+## Usage
+
+### Checking Permissions
+
+Use the `acl` gate to check permissions:
+
+```php
+Gate::allows('acl', 'permission_name');
+```
+
+Or in Blade:
+
+```blade
+@can('acl', 'permission_name')
+    // Content
+@endcan
+```
+
+### ACL Service
+
+```php
+$acl = app('acl');
+$acl->hasPermission('permission_name');
+```
+
+## Models
+
+- `Molitor\User\Models\User` - User model
+- `Molitor\User\Models\UserGroup` - User group model
+- `Molitor\User\Models\Permission` - Permission model
+
+## Admin Interfaces
+
+### Filament Admin
+
+The Filament resources are automatically registered:
+- UserResource
+- UserGroupResource
+- PermissionResource
+
+### Inertia Vue Admin
+
+Vue components are located in `resources/js/pages/User/Admin/`:
+- Users (Index, Create, Edit)
+- UserGroups (Index, Create, Edit)
+- Permissions (Index, Create, Edit)
+
+All admin pages use the main AppLayout and require authentication.
+ csomag
 
 Laravel csomag felhasználók, felhasználói csoportok és jogosultságok (ACL) kezeléséhez. A csomag egyszerű csoport‑alapú jogosultságkezelést biztosít, migrációkkal, Gate integrációval és kényelmi szolgáltatásokkal.
 

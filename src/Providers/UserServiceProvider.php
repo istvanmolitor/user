@@ -23,6 +23,17 @@ class UserServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'user');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+
+        // Publish Vue components
+        $this->publishes([
+            __DIR__ . '/../../resources/js' => resource_path('js/pages/User'),
+        ], 'user-views');
+
+        // Publish config
+        $this->publishes([
+            __DIR__ . '/../../config/navigation.php' => config_path('user-navigation.php'),
+        ], 'user-config');
 
         Gate::define(
             'acl',
