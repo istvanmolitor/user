@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { ref } from 'vue';
+import { trans } from 'laravel-vue-i18n';
 
 interface Permission {
     id: number;
@@ -32,9 +33,12 @@ const props = defineProps<Props>();
 
 const search = ref(props.filters.search || '');
 
+// Translation helper for templates
+const t = (key: string) => trans(key);
+
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Admin', href: '#' },
-    { title: 'Permissions', href: route('user.admin.permissions.index') },
+    { title: t('user::common.admin'), href: '#' },
+    { title: t('user::common.permissions'), href: route('user.admin.permissions.index') },
 ];
 
 const handleSearch = () => {
@@ -45,21 +49,21 @@ const handleSearch = () => {
 };
 
 const deletePermission = (permissionId: number) => {
-    if (confirm('Are you sure you want to delete this permission?')) {
+    if (confirm(t('user::permission.messages.confirm_delete'))) {
         router.delete(route('user.admin.permissions.destroy', permissionId));
     }
 };
 </script>
 
 <template>
-    <Head title="Permissions - Admin" />
+    <Head :title="t('user::permission.title') + ' - ' + t('user::common.admin')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 p-4">
             <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold">Permissions</h1>
+                <h1 class="text-2xl font-bold">{{ t('user::permission.title') }}</h1>
                 <Link :href="route('user.admin.permissions.create')">
-                    <Button>Create Permission</Button>
+                    <Button>{{ t('user::permission.actions.create_permission') }}</Button>
                 </Link>
             </div>
 
@@ -67,21 +71,21 @@ const deletePermission = (permissionId: number) => {
                 <Input
                     v-model="search"
                     type="text"
-                    placeholder="Search permissions..."
+                    :placeholder="t('user::permission.placeholders.search')"
                     class="max-w-sm"
                     @keyup.enter="handleSearch"
                 />
-                <Button @click="handleSearch">Search</Button>
+                <Button @click="handleSearch">{{ t('user::permission.actions.search') }}</Button>
             </div>
 
             <div class="rounded-lg border">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>User Groups</TableHead>
-                            <TableHead class="text-right">Actions</TableHead>
+                            <TableHead>{{ t('user::permission.table.name') }}</TableHead>
+                            <TableHead>{{ t('user::permission.table.description') }}</TableHead>
+                            <TableHead>{{ t('user::permission.table.userGroups') }}</TableHead>
+                            <TableHead class="text-right">{{ t('user::permission.table.actions') }}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -94,17 +98,17 @@ const deletePermission = (permissionId: number) => {
                                         {{ group.name }}
                                     </Badge>
                                     <span v-if="permission.user_groups.length === 0" class="text-sm text-muted-foreground">
-                                        No groups
+                                        {{ t('user::permission.messages.no_groups') }}
                                     </span>
                                 </div>
                             </TableCell>
                             <TableCell class="text-right">
                                 <div class="flex justify-end gap-2">
                                     <Link :href="route('user.admin.permissions.edit', permission.id)">
-                                        <Button variant="outline" size="sm">Edit</Button>
+                                        <Button variant="outline" size="sm">{{ t('user::permission.actions.edit') }}</Button>
                                     </Link>
                                     <Button variant="destructive" size="sm" @click="deletePermission(permission.id)">
-                                        Delete
+                                        {{ t('user::permission.actions.delete') }}
                                     </Button>
                                 </div>
                             </TableCell>

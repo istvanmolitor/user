@@ -33,7 +33,6 @@ class UserController extends BaseAdminController
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
             'user_groups' => 'array',
             'user_groups.*' => 'exists:user_groups,id',
             'email_verified' => 'boolean',
@@ -41,7 +40,7 @@ class UserController extends BaseAdminController
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => bcrypt($validated['password']),
+            'password' => bcrypt(\Illuminate\Support\Str::random(32)),
             'email_verified_at' => $validated['email_verified'] ?? false ? now() : null,
         ]);
         if (isset($validated['user_groups'])) {
@@ -63,7 +62,6 @@ class UserController extends BaseAdminController
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
             'user_groups' => 'array',
             'user_groups.*' => 'exists:user_groups,id',
             'email_verified' => 'boolean',
@@ -73,9 +71,6 @@ class UserController extends BaseAdminController
             'email' => $validated['email'],
             'email_verified_at' => $validated['email_verified'] ?? false ? now() : null,
         ]);
-        if (isset($validated['password'])) {
-            $user->update(['password' => bcrypt($validated['password'])]);
-        }
         if (isset($validated['user_groups'])) {
             $user->userGroups()->sync($validated['user_groups']);
         }

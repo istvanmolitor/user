@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import InputError from '@/components/InputError.vue';
+import { trans } from 'laravel-vue-i18n';
 
 interface User {
     id: number;
@@ -31,16 +32,17 @@ const props = defineProps<Props>();
 const form = useForm({
     name: props.user.name,
     email: props.user.email,
-    password: '',
-    password_confirmation: '',
     user_groups: props.user.user_groups.map(g => g.id),
     email_verified: !!props.user.email_verified_at,
 });
 
+// Translation helper
+const t = (key: string) => trans(key);
+
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Admin', href: '#' },
-    { title: 'Users', href: route('user.admin.users.index') },
-    { title: 'Edit', href: route('user.admin.users.edit', props.user.id) },
+    { title: t('user::common.admin'), href: '#' },
+    { title: t('user::common.users'), href: route('user.admin.users.index') },
+    { title: t('user::user.edit'), href: route('user.admin.users.edit', props.user.id) },
 ];
 
 const submit = () => {
@@ -58,15 +60,15 @@ const toggleUserGroup = (groupId: number) => {
 </script>
 
 <template>
-    <Head title="Edit User - Admin" />
+    <Head :title="t('user::user.edit') + ' - ' + trans('user::common.admin')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 p-4">
-            <h1 class="text-2xl font-bold">Edit User</h1>
+            <h1 class="text-2xl font-bold">{{ t('user::user.edit') }}</h1>
 
             <form @submit.prevent="submit" class="max-w-2xl space-y-6">
                 <div class="space-y-2">
-                    <Label for="name">Name</Label>
+                    <Label for="name">{{ t('user::user.form.name') }}</Label>
                     <Input
                         id="name"
                         v-model="form.name"
@@ -77,7 +79,7 @@ const toggleUserGroup = (groupId: number) => {
                 </div>
 
                 <div class="space-y-2">
-                    <Label for="email">Email</Label>
+                    <Label for="email">{{ t('user::user.form.email') }}</Label>
                     <Input
                         id="email"
                         v-model="form.email"
@@ -88,37 +90,18 @@ const toggleUserGroup = (groupId: number) => {
                 </div>
 
                 <div class="space-y-2">
-                    <Label for="password">Password (leave blank to keep current)</Label>
-                    <Input
-                        id="password"
-                        v-model="form.password"
-                        type="password"
-                    />
-                    <InputError :message="form.errors.password" />
-                </div>
-
-                <div class="space-y-2">
-                    <Label for="password_confirmation">Confirm Password</Label>
-                    <Input
-                        id="password_confirmation"
-                        v-model="form.password_confirmation"
-                        type="password"
-                    />
-                </div>
-
-                <div class="space-y-2">
                     <div class="flex items-center space-x-2">
                         <Checkbox
                             id="email_verified"
                             :checked="form.email_verified"
                             @update:checked="form.email_verified = $event"
                         />
-                        <Label for="email_verified">Email Verified</Label>
+                        <Label for="email_verified">{{ t('user::user.form.email_verified') }}</Label>
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <Label>User Groups</Label>
+                    <Label>{{ t('user::user.form.user_groups') }}</Label>
                     <div class="space-y-2">
                         <div
                             v-for="group in userGroups"
@@ -138,14 +121,14 @@ const toggleUserGroup = (groupId: number) => {
 
                 <div class="flex gap-2">
                     <Button type="submit" :disabled="form.processing">
-                        Update User
+                        {{ t('user::user.actions.update_user') }}
                     </Button>
                     <Button
                         type="button"
                         variant="outline"
                         @click="router.visit(route('user.admin.users.index'))"
                     >
-                        Cancel
+                        {{ t('user::user.actions.cancel') }}
                     </Button>
                 </div>
             </form>

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { ref } from 'vue';
+import { trans } from 'laravel-vue-i18n';
 
 interface UserGroup {
     id: number;
@@ -33,9 +34,12 @@ const props = defineProps<Props>();
 
 const search = ref(props.filters.search || '');
 
+// Translation helper
+const t = (key: string) => trans(key);
+
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Admin', href: '#' },
-    { title: 'User Groups', href: route('user.admin.user-groups.index') },
+    { title: t('user::common.admin'), href: '#' },
+    { title: t('user::common.user_groups'), href: route('user.admin.user-groups.index') },
 ];
 
 const handleSearch = () => {
@@ -46,7 +50,7 @@ const handleSearch = () => {
 };
 
 const deleteUserGroup = (userGroupId: number) => {
-    if (confirm('Are you sure you want to delete this user group?')) {
+    if (confirm(t('user::user-group.messages.confirm_delete'))) {
         router.delete(route('user.admin.user-groups.destroy', userGroupId));
     }
 };
@@ -58,9 +62,9 @@ const deleteUserGroup = (userGroupId: number) => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 p-4">
             <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold">User Groups</h1>
+                <h1 class="text-2xl font-bold">{{ t('user::user-group.title') }}</h1>
                 <Link :href="route('user.admin.user-groups.create')">
-                    <Button>Create User Group</Button>
+                    <Button>{{ t('user::user-group.actions.create_user_group') }}</Button>
                 </Link>
             </div>
 
@@ -68,22 +72,22 @@ const deleteUserGroup = (userGroupId: number) => {
                 <Input
                     v-model="search"
                     type="text"
-                    placeholder="Search user groups..."
+                    :placeholder="t('user::user-group.placeholders.search')"
                     class="max-w-sm"
                     @keyup.enter="handleSearch"
                 />
-                <Button @click="handleSearch">Search</Button>
+                <Button @click="handleSearch">{{ t('user::user-group.actions.search') }}</Button>
             </div>
 
             <div class="rounded-lg border">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>Permissions</TableHead>
-                            <TableHead>Default</TableHead>
-                            <TableHead class="text-right">Actions</TableHead>
+                            <TableHead>{{ t('user::user-group.table.name') }}</TableHead>
+                            <TableHead>{{ t('user::user-group.table.description') }}</TableHead>
+                            <TableHead>{{ t('user::user-group.table.permissions') }}</TableHead>
+                            <TableHead>{{ t('user::user-group.table.default') }}</TableHead>
+                            <TableHead class="text-right">{{ t('user::user-group.table.actions') }}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -96,22 +100,22 @@ const deleteUserGroup = (userGroupId: number) => {
                                         {{ permission.name }}
                                     </Badge>
                                     <span v-if="group.permissions.length === 0" class="text-sm text-muted-foreground">
-                                        No permissions
+                                        {{ t('user::user-group.messages.no_permissions') }}
                                     </span>
                                 </div>
                             </TableCell>
                             <TableCell>
                                 <Badge :variant="group.is_default ? 'default' : 'outline'">
-                                    {{ group.is_default ? 'Yes' : 'No' }}
+                                    {{ group.is_default ? trans('user::user-group.values.yes') : trans('user::user-group.values.no') }}
                                 </Badge>
                             </TableCell>
                             <TableCell class="text-right">
                                 <div class="flex justify-end gap-2">
                                     <Link :href="route('user.admin.user-groups.edit', group.id)">
-                                        <Button variant="outline" size="sm">Edit</Button>
+                                        <Button variant="outline" size="sm">{{ t('user::user-group.actions.edit') }}</Button>
                                     </Link>
                                     <Button variant="destructive" size="sm" @click="deleteUserGroup(group.id)">
-                                        Delete
+                                        {{ t('user::user-group.actions.delete') }}
                                     </Button>
                                 </div>
                             </TableCell>

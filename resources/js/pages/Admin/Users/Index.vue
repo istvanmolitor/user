@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { ref } from 'vue';
+import { trans } from 'laravel-vue-i18n';
 
 interface User {
     id: number;
@@ -33,9 +34,12 @@ const props = defineProps<Props>();
 
 const search = ref(props.filters.search || '');
 
+// Translation helper
+const t = (key: string) => trans(key);
+
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Admin', href: '#' },
-    { title: 'Users', href: route('user.admin.users.index') },
+    { title: t('user::common.admin'), href: '#' },
+    { title: t('user::common.users'), href: route('user.admin.users.index') },
 ];
 
 const handleSearch = () => {
@@ -46,21 +50,21 @@ const handleSearch = () => {
 };
 
 const deleteUser = (userId: number) => {
-    if (confirm('Are you sure you want to delete this user?')) {
+    if (confirm(t('user::user.messages.confirm_delete'))) {
         router.delete(route('user.admin.users.destroy', userId));
     }
 };
 </script>
 
 <template>
-    <Head title="Users - Admin" />
+    <Head :title="t('user::user.title') + ' - ' + trans('user::common.admin')" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 p-4">
             <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold">Users</h1>
+                <h1 class="text-2xl font-bold">{{ t('user::user.title') }}</h1>
                 <Link :href="route('user.admin.users.create')">
-                    <Button>Create User</Button>
+                    <Button>{{ t('user::user.actions.create_user') }}</Button>
                 </Link>
             </div>
 
@@ -68,22 +72,22 @@ const deleteUser = (userId: number) => {
                 <Input
                     v-model="search"
                     type="text"
-                    placeholder="Search users..."
+                    :placeholder="t('user::user.placeholders.search')"
                     class="max-w-sm"
                     @keyup.enter="handleSearch"
                 />
-                <Button @click="handleSearch">Search</Button>
+                <Button @click="handleSearch">{{ t('user::user.actions.search') }}</Button>
             </div>
 
             <div class="rounded-lg border">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Email</TableHead>
-                            <TableHead>User Groups</TableHead>
-                            <TableHead>Verified</TableHead>
-                            <TableHead class="text-right">Actions</TableHead>
+                            <TableHead>{{ t('user::user.table.name') }}</TableHead>
+                            <TableHead>{{ t('user::user.table.email') }}</TableHead>
+                            <TableHead>{{ t('user::user.table.user_groups') }}</TableHead>
+                            <TableHead>{{ t('user::user.table.verified') }}</TableHead>
+                            <TableHead class="text-right">{{ t('user::user.table.actions') }}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -99,16 +103,16 @@ const deleteUser = (userId: number) => {
                             </TableCell>
                             <TableCell>
                                 <Badge :variant="user.email_verified_at ? 'default' : 'outline'">
-                                    {{ user.email_verified_at ? 'Yes' : 'No' }}
+                                    {{ user.email_verified_at ? trans('user::user.values.yes') : trans('user::user.values.no') }}
                                 </Badge>
                             </TableCell>
                             <TableCell class="text-right">
                                 <div class="flex justify-end gap-2">
                                     <Link :href="route('user.admin.users.edit', user.id)">
-                                        <Button variant="outline" size="sm">Edit</Button>
+                                        <Button variant="outline" size="sm">{{ t('user::user.actions.edit') }}</Button>
                                     </Link>
                                     <Button variant="destructive" size="sm" @click="deleteUser(user.id)">
-                                        Delete
+                                        {{ t('user::user.actions.delete') }}
                                     </Button>
                                 </div>
                             </TableCell>
