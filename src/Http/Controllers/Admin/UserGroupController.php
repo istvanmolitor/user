@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Molitor\Admin\Controllers\BaseAdminController;
+use Molitor\Admin\Traits\HasAdminFilters;
 use Molitor\User\Http\Requests\StoreUserGroupRequest;
 use Molitor\User\Http\Requests\UpdateUserGroupRequest;
 use Molitor\User\Models\Permission;
@@ -13,23 +14,16 @@ use Molitor\User\Models\UserGroup;
 
 class UserGroupController extends BaseAdminController
 {
+    use HasAdminFilters;
+
     public function index(Request $request): Response
     {
-        $userGroups = UserGroup::with('permissions')
-            ->when($request->input('search'), function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            })
-            ->when($request->input('sort'), function ($query, $sort) use ($request) {
-                $direction = $request->input('direction', 'asc');
-                $query->orderBy($sort, $direction);
-            }, function ($query) {
-                $query->orderBy('name', 'asc');
-            })
+        $query = UserGroup::with('permissions');
+        $userGroups = $this->applyAdminFilters($query, $request, ['name', 'description'])
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('User/Admin/UserGroups/Index', [
+        return Inertia::render('Admin/UserGroups/Index', [
             'userGroups' => $userGroups,
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
@@ -37,7 +31,7 @@ class UserGroupController extends BaseAdminController
 
     public function create(): Response
     {
-        return Inertia::render('User/Admin/UserGroups/Create', [
+        return Inertia::render('Admin/UserGroups/Create', [
             'permissions' => Permission::all(),
         ]);
     }
@@ -64,7 +58,7 @@ class UserGroupController extends BaseAdminController
     {
         $userGroup->load('permissions');
 
-        return Inertia::render('User/Admin/UserGroups/Edit', [
+        return Inertia::render('Admin/UserGroups/Edit', [
             'userGroup' => $userGroup,
             'permissions' => Permission::all(),
         ]);

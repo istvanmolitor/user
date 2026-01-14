@@ -3,12 +3,13 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ref } from 'vue';
 import { trans } from 'laravel-vue-i18n';
 import { route } from '@/lib/route';
+import { AdminFilter } from '@admin/components';
+import { useAdminSort } from '@admin/composables/useAdminSort';
+import Icon from '@/components/Icon.vue';
 
 interface UserGroup {
     id: number;
@@ -35,7 +36,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const search = ref(props.filters.search || '');
+const { sortBy, getSortIcon } = useAdminSort('user.admin.user-groups.index', props);
 
 // Translation helper
 const t = (key: string) => trans(key);
@@ -44,37 +45,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: t('user::common.admin'), href: '#' },
     { title: t('user::common.user_groups'), href: route('user.admin.user-groups.index') },
 ];
-
-const handleSearch = () => {
-    router.get(route('user.admin.user-groups.index'), {
-        search: search.value,
-        sort: props.filters.sort,
-        direction: props.filters.direction,
-    }, {
-        preserveState: true,
-        replace: true,
-    });
-};
-
-const sortBy = (column: string) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (props.filters.sort === column && props.filters.direction === 'asc') {
-        direction = 'desc';
-    }
-    router.get(route('user.admin.user-groups.index'), {
-        search: search.value,
-        sort: column,
-        direction: direction,
-    }, {
-        preserveState: true,
-        replace: true,
-    });
-};
-
-const getSortIcon = (column: string) => {
-    if (props.filters.sort !== column) return '↕️';
-    return props.filters.direction === 'asc' ? '↑' : '↓';
-};
 
 const deleteUserGroup = (userGroupId: number) => {
     if (confirm(t('user::user-group.messages.confirm_delete'))) {
@@ -95,30 +65,34 @@ const deleteUserGroup = (userGroupId: number) => {
                 </Link>
             </div>
 
-            <div class="flex gap-2">
-                <Input
-                    v-model="search"
-                    type="text"
-                    :placeholder="t('user::user-group.placeholders.search')"
-                    class="max-w-sm"
-                    @keyup.enter="handleSearch"
-                />
-                <Button @click="handleSearch">{{ t('user::user-group.actions.search') }}</Button>
-            </div>
+            <AdminFilter
+                route-name="user.admin.user-groups.index"
+                :filters="filters"
+                :placeholder="t('user::user-group.placeholders.search')"
+            />
 
             <div class="rounded-lg border">
                 <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHead class="cursor-pointer select-none" @click="sortBy('name')">
-                                {{ t('user::user-group.table.name') }} {{ getSortIcon('name') }}
+                                <div class="flex items-center gap-1">
+                                    {{ t('user::user-group.table.name') }}
+                                    <Icon :name="getSortIcon('name')" class="h-4 w-4" />
+                                </div>
                             </TableHead>
                             <TableHead class="cursor-pointer select-none" @click="sortBy('description')">
-                                {{ t('user::user-group.table.description') }} {{ getSortIcon('description') }}
+                                <div class="flex items-center gap-1">
+                                    {{ t('user::user-group.table.description') }}
+                                    <Icon :name="getSortIcon('description')" class="h-4 w-4" />
+                                </div>
                             </TableHead>
                             <TableHead>{{ t('user::user-group.table.permissions') }}</TableHead>
                             <TableHead class="cursor-pointer select-none" @click="sortBy('is_default')">
-                                {{ t('user::user-group.table.default') }} {{ getSortIcon('is_default') }}
+                                <div class="flex items-center gap-1">
+                                    {{ t('user::user-group.table.default') }}
+                                    <Icon :name="getSortIcon('is_default')" class="h-4 w-4" />
+                                </div>
                             </TableHead>
                             <TableHead class="text-right">{{ t('user::user-group.table.actions') }}</TableHead>
                         </TableRow>
@@ -163,7 +137,7 @@ const deleteUserGroup = (userGroupId: number) => {
                     :key="page"
                     :variant="page === userGroups.current_page ? 'default' : 'outline'"
                     size="sm"
-                    @click="router.get(route('user.admin.user-groups.index'), { page, search: search })"
+                    @click="router.get(route('user.admin.user-groups.index'), { page, ...filters })"
                 >
                     {{ page }}
                 </Button>

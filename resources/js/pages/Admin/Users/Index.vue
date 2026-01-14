@@ -3,12 +3,20 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ref } from 'vue';
 import { trans } from 'laravel-vue-i18n';
 import { route } from '@/lib/route';
+import { AdminFilter } from '@admin/components';
+import { useAdminSort } from '@admin/composables/useAdminSort';
+import Icon from '@/components/Icon.vue';
 
 interface User {
     id: number;
@@ -35,7 +43,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const search = ref(props.filters.search || '');
+const { sortBy, getSortIcon } = useAdminSort('user.admin.users.index', props);
 
 // Translation helper
 const t = (key: string) => trans(key);
@@ -45,37 +53,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: t('user::common.users'), href: route('user.admin.users.index') },
 ];
 
-const handleSearch = () => {
-    router.get(route('user.admin.users.index'), {
-        search: search.value,
-        sort: props.filters.sort,
-        direction: props.filters.direction,
-    }, {
-        preserveState: true,
-        replace: true,
-    });
-};
-
-const sortBy = (column: string) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (props.filters.sort === column && props.filters.direction === 'asc') {
-        direction = 'desc';
-    }
-    router.get(route('user.admin.users.index'), {
-        search: search.value,
-        sort: column,
-        direction: direction,
-    }, {
-        preserveState: true,
-        replace: true,
-    });
-};
-
-const getSortIcon = (column: string) => {
-    if (props.filters.sort !== column) return '↕️';
-    return props.filters.direction === 'asc' ? '↑' : '↓';
-};
-
 const deleteUser = (userId: number) => {
     if (confirm(t('user::user.messages.confirm_delete'))) {
         router.delete(route('user.admin.users.destroy', userId));
@@ -84,7 +61,9 @@ const deleteUser = (userId: number) => {
 </script>
 
 <template>
-    <Head :title="t('user::user.title') + ' - ' + trans('user::common.admin')" />
+    <Head
+        :title="t('user::user.title') + ' - ' + trans('user::common.admin')"
+    />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 p-4">
@@ -95,54 +74,102 @@ const deleteUser = (userId: number) => {
                 </Link>
             </div>
 
-            <div class="flex gap-2">
-                <Input
-                    v-model="search"
-                    type="text"
-                    :placeholder="t('user::user.placeholders.search')"
-                    class="max-w-sm"
-                    @keyup.enter="handleSearch"
-                />
-                <Button @click="handleSearch">{{ t('user::user.actions.search') }}</Button>
-            </div>
+            <AdminFilter
+                route-name="user.admin.users.index"
+                :filters="filters"
+                :placeholder="t('user::user.placeholders.search')"
+            />
 
             <div class="rounded-lg border">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead class="cursor-pointer select-none" @click="sortBy('name')">
-                                {{ t('user::user.table.name') }} {{ getSortIcon('name') }}
+                            <TableHead
+                                class="cursor-pointer select-none"
+                                @click="sortBy('name')"
+                            >
+                                <div class="flex items-center gap-1">
+                                    {{ t('user::user.table.name') }}
+                                    <Icon
+                                        :name="getSortIcon('name')"
+                                        class="h-4 w-4"
+                                    />
+                                </div>
                             </TableHead>
-                            <TableHead class="cursor-pointer select-none" @click="sortBy('email')">
-                                {{ t('user::user.table.email') }} {{ getSortIcon('email') }}
+                            <TableHead
+                                class="cursor-pointer select-none"
+                                @click="sortBy('email')"
+                            >
+                                <div class="flex items-center gap-1">
+                                    {{ t('user::user.table.email') }}
+                                    <Icon
+                                        :name="getSortIcon('email')"
+                                        class="h-4 w-4"
+                                    />
+                                </div>
                             </TableHead>
-                            <TableHead>{{ t('user::user.table.user_groups') }}</TableHead>
-                            <TableHead>{{ t('user::user.table.verified') }}</TableHead>
-                            <TableHead class="text-right">{{ t('user::user.table.actions') }}</TableHead>
+                            <TableHead>{{
+                                t('user::user.table.user_groups')
+                            }}</TableHead>
+                            <TableHead>{{
+                                t('user::user.table.verified')
+                            }}</TableHead>
+                            <TableHead class="text-right">{{
+                                t('user::user.table.actions')
+                            }}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         <TableRow v-for="user in users.data" :key="user.id">
-                            <TableCell class="font-medium">{{ user.name }}</TableCell>
+                            <TableCell class="font-medium">{{
+                                user.name
+                            }}</TableCell>
                             <TableCell>{{ user.email }}</TableCell>
                             <TableCell>
                                 <div class="flex gap-1">
-                                    <Badge v-for="group in user.user_groups" :key="group.id" variant="secondary">
+                                    <Badge
+                                        v-for="group in user.user_groups"
+                                        :key="group.id"
+                                        variant="secondary"
+                                    >
                                         {{ group.name }}
                                     </Badge>
                                 </div>
                             </TableCell>
                             <TableCell>
-                                <Badge :variant="user.email_verified_at ? 'default' : 'outline'">
-                                    {{ user.email_verified_at ? trans('user::user.values.yes') : trans('user::user.values.no') }}
+                                <Badge
+                                    :variant="
+                                        user.email_verified_at
+                                            ? 'default'
+                                            : 'outline'
+                                    "
+                                >
+                                    {{
+                                        user.email_verified_at
+                                            ? trans('user::user.values.yes')
+                                            : trans('user::user.values.no')
+                                    }}
                                 </Badge>
                             </TableCell>
                             <TableCell class="text-right">
                                 <div class="flex justify-end gap-2">
-                                    <Link :href="route('user.admin.users.edit', user.id)">
-                                        <Button variant="outline" size="sm">{{ t('user::user.actions.edit') }}</Button>
+                                    <Link
+                                        :href="
+                                            route(
+                                                'user.admin.users.edit',
+                                                user.id,
+                                            )
+                                        "
+                                    >
+                                        <Button variant="outline" size="sm">{{
+                                            t('user::user.actions.edit')
+                                        }}</Button>
                                     </Link>
-                                    <Button variant="destructive" size="sm" @click="deleteUser(user.id)">
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        @click="deleteUser(user.id)"
+                                    >
                                         {{ t('user::user.actions.delete') }}
                                     </Button>
                                 </div>
@@ -156,9 +183,16 @@ const deleteUser = (userId: number) => {
                 <Button
                     v-for="page in users.last_page"
                     :key="page"
-                    :variant="page === users.current_page ? 'default' : 'outline'"
+                    :variant="
+                        page === users.current_page ? 'default' : 'outline'
+                    "
                     size="sm"
-                    @click="router.get(route('user.admin.users.index'), { page, search: search })"
+                    @click="
+                        router.get(route('user.admin.users.index'), {
+                            page,
+                            ...filters,
+                        })
+                    "
                 >
                     {{ page }}
                 </Button>
@@ -166,4 +200,3 @@ const deleteUser = (userId: number) => {
         </div>
     </AppLayout>
 </template>
-

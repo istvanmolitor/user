@@ -3,12 +3,13 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ref } from 'vue';
 import { trans } from 'laravel-vue-i18n';
 import { route } from '@/lib/route';
+import { AdminFilter } from '@admin/components';
+import { useAdminSort } from '@admin/composables/useAdminSort';
+import Icon from '@/components/Icon.vue';
 
 interface Permission {
     id: number;
@@ -34,7 +35,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const search = ref(props.filters.search || '');
+const { sortBy, getSortIcon } = useAdminSort('user.admin.permissions.index', props);
 
 // Translation helper for templates
 const t = (key: string) => trans(key);
@@ -43,37 +44,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: t('user::common.admin'), href: '#' },
     { title: t('user::common.permissions'), href: route('user.admin.permissions.index') },
 ];
-
-const handleSearch = () => {
-    router.get(route('user.admin.permissions.index'), {
-        search: search.value,
-        sort: props.filters.sort,
-        direction: props.filters.direction,
-    }, {
-        preserveState: true,
-        replace: true,
-    });
-};
-
-const sortBy = (column: string) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (props.filters.sort === column && props.filters.direction === 'asc') {
-        direction = 'desc';
-    }
-    router.get(route('user.admin.permissions.index'), {
-        search: search.value,
-        sort: column,
-        direction: direction,
-    }, {
-        preserveState: true,
-        replace: true,
-    });
-};
-
-const getSortIcon = (column: string) => {
-    if (props.filters.sort !== column) return '↕️';
-    return props.filters.direction === 'asc' ? '↑' : '↓';
-};
 
 const deletePermission = (permissionId: number) => {
     if (confirm(t('user::permission.messages.confirm_delete'))) {
@@ -94,26 +64,27 @@ const deletePermission = (permissionId: number) => {
                 </Link>
             </div>
 
-            <div class="flex gap-2">
-                <Input
-                    v-model="search"
-                    type="text"
-                    :placeholder="t('user::permission.placeholders.search')"
-                    class="max-w-sm"
-                    @keyup.enter="handleSearch"
-                />
-                <Button @click="handleSearch">{{ t('user::permission.actions.search') }}</Button>
-            </div>
+            <AdminFilter
+                route-name="user.admin.permissions.index"
+                :filters="filters"
+                :placeholder="t('user::permission.placeholders.search')"
+            />
 
             <div class="rounded-lg border">
                 <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHead class="cursor-pointer select-none" @click="sortBy('name')">
-                                {{ t('user::permission.table.name') }} {{ getSortIcon('name') }}
+                                <div class="flex items-center gap-1">
+                                    {{ t('user::permission.table.name') }}
+                                    <Icon :name="getSortIcon('name')" class="h-4 w-4" />
+                                </div>
                             </TableHead>
                             <TableHead class="cursor-pointer select-none" @click="sortBy('description')">
-                                {{ t('user::permission.table.description') }} {{ getSortIcon('description') }}
+                                <div class="flex items-center gap-1">
+                                    {{ t('user::permission.table.description') }}
+                                    <Icon :name="getSortIcon('description')" class="h-4 w-4" />
+                                </div>
                             </TableHead>
                             <TableHead>{{ t('user::permission.table.userGroups') }}</TableHead>
                             <TableHead class="text-right">{{ t('user::permission.table.actions') }}</TableHead>
@@ -154,7 +125,7 @@ const deletePermission = (permissionId: number) => {
                     :key="page"
                     :variant="page === permissions.current_page ? 'default' : 'outline'"
                     size="sm"
-                    @click="router.get(route('user.admin.permissions.index'), { page, search: search })"
+                    @click="router.get(route('user.admin.permissions.index'), { page, ...filters })"
                 >
                     {{ page }}
                 </Button>

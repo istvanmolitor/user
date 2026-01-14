@@ -4,36 +4,31 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Molitor\Admin\Controllers\BaseAdminController;
+use Molitor\Admin\Traits\HasAdminFilters;
 use Molitor\User\Http\Requests\StoreUserRequest;
 use Molitor\User\Http\Requests\UpdateUserRequest;
 use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
+
 class UserController extends BaseAdminController
 {
+    use HasAdminFilters;
+
     public function index(Request $request): Response
     {
-        $users = User::with('userGroups')
-            ->when($request->input('search'), function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            })
-            ->when($request->input('sort'), function ($query, $sort) use ($request) {
-                $direction = $request->input('direction', 'asc');
-                $query->orderBy($sort, $direction);
-            }, function ($query) {
-                $query->orderBy('name', 'asc');
-            })
+        $query = User::with('userGroups');
+        $users = $this->applyAdminFilters($query, $request, ['name', 'email'])
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('User/Admin/Users/Index', [
+        return Inertia::render('Admin/Users/Index', [
             'users' => $users,
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
     }
     public function create(): Response
     {
-        return Inertia::render('User/Admin/Users/Create', [
+        return Inertia::render('Admin/Users/Create', [
             'userGroups' => UserGroup::all(),
         ]);
     }
@@ -56,7 +51,7 @@ class UserController extends BaseAdminController
     public function edit(User $user): Response
     {
         $user->load('userGroups');
-        return Inertia::render('User/Admin/Users/Edit', [
+        return Inertia::render('Admin/Users/Edit', [
             'user' => $user,
             'userGroups' => UserGroup::all(),
         ]);

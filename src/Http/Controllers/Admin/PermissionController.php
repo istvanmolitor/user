@@ -6,29 +6,23 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Molitor\Admin\Controllers\BaseAdminController;
+use Molitor\Admin\Traits\HasAdminFilters;
 use Molitor\User\Http\Requests\StorePermissionRequest;
 use Molitor\User\Http\Requests\UpdatePermissionRequest;
 use Molitor\User\Models\Permission;
 
 class PermissionController extends BaseAdminController
 {
+    use HasAdminFilters;
+
     public function index(Request $request): Response
     {
-        $permissions = Permission::with('userGroups')
-            ->when($request->input('search'), function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            })
-            ->when($request->input('sort'), function ($query, $sort) use ($request) {
-                $direction = $request->input('direction', 'asc');
-                $query->orderBy($sort, $direction);
-            }, function ($query) {
-                $query->orderBy('name', 'asc');
-            })
+        $query = Permission::with('userGroups');
+        $permissions = $this->applyAdminFilters($query, $request, ['name', 'description'])
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('User/Admin/Permissions/Index', [
+        return Inertia::render('Admin/Permissions/Index', [
             'permissions' => $permissions,
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
@@ -36,7 +30,7 @@ class PermissionController extends BaseAdminController
 
     public function create(): Response
     {
-        return Inertia::render('User/Admin/Permissions/Create');
+        return Inertia::render('Admin/Permissions/Create');
     }
 
     public function store(StorePermissionRequest $request)
@@ -53,7 +47,7 @@ class PermissionController extends BaseAdminController
     {
         $permission->load('userGroups');
 
-        return Inertia::render('User/Admin/Permissions/Edit', [
+        return Inertia::render('Admin/Permissions/Edit', [
             'permission' => $permission,
         ]);
     }

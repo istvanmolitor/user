@@ -27,7 +27,7 @@ class UserServiceProvider extends ServiceProvider
 
         // Publish Vue components
         $this->publishes([
-            __DIR__ . '/../../resources/js' => resource_path('js/pages/User'),
+            __DIR__ . '/../../resources/js/pages' => resource_path('js/pages/vendor/user'),
         ], 'user-views');
 
         // Publish config
