@@ -14,7 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { trans } from 'laravel-vue-i18n';
 import { route } from '@/lib/route';
-import { AdminFilter } from '@admin/components';
+import { AdminFilter, AdminPagination } from '@admin/components';
 import { useAdminSort } from '@admin/composables/useAdminSort';
 import Icon from '@/components/Icon.vue';
 
@@ -179,24 +179,11 @@ const deleteUser = (userId: number) => {
                 </Table>
             </div>
 
-            <div v-if="users.last_page > 1" class="flex justify-center gap-2">
-                <Button
-                    v-for="page in users.last_page"
-                    :key="page"
-                    :variant="
-                        page === users.current_page ? 'default' : 'outline'
-                    "
-                    size="sm"
-                    @click="
-                        router.get(route('user.admin.users.index'), {
-                            page,
-                            ...filters,
-                        })
-                    "
-                >
-                    {{ page }}
-                </Button>
-            </div>
+            <AdminPagination
+                route-name="user.admin.users.index"
+                :data="users"
+                :filters="filters"
+            />
         </div>
     </AppLayout>
 </template>

@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { trans } from 'laravel-vue-i18n';
 import { route } from '@/lib/route';
-import { AdminFilter } from '@admin/components';
+import { AdminFilter, AdminPagination } from '@admin/components';
 import { useAdminSort } from '@admin/composables/useAdminSort';
 import Icon from '@/components/Icon.vue';
 
@@ -131,17 +131,11 @@ const deleteUserGroup = (userGroupId: number) => {
                 </Table>
             </div>
 
-            <div v-if="userGroups.last_page > 1" class="flex justify-center gap-2">
-                <Button
-                    v-for="page in userGroups.last_page"
-                    :key="page"
-                    :variant="page === userGroups.current_page ? 'default' : 'outline'"
-                    size="sm"
-                    @click="router.get(route('user.admin.user-groups.index'), { page, ...filters })"
-                >
-                    {{ page }}
-                </Button>
-            </div>
+            <AdminPagination
+                route-name="user.admin.user-groups.index"
+                :data="userGroups"
+                :filters="filters"
+            />
         </div>
     </AppLayout>
 </template>
