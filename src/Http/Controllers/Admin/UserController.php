@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Molitor\Admin\Controllers\BaseAdminController;
+use Molitor\User\Http\Requests\StoreUserRequest;
+use Molitor\User\Http\Requests\UpdateUserRequest;
 use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
 class UserController extends BaseAdminController
@@ -15,11 +17,18 @@ class UserController extends BaseAdminController
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             })
+            ->when($request->input('sort'), function ($query, $sort) use ($request) {
+                $direction = $request->input('direction', 'asc');
+                $query->orderBy($sort, $direction);
+            }, function ($query) {
+                $query->orderBy('name', 'asc');
+            })
             ->paginate(10)
             ->withQueryString();
+
         return Inertia::render('User/Admin/Users/Index', [
             'users' => $users,
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
     }
     public function create(): Response
@@ -28,15 +37,10 @@ class UserController extends BaseAdminController
             'userGroups' => UserGroup::all(),
         ]);
     }
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'user_groups' => 'array',
-            'user_groups.*' => 'exists:user_groups,id',
-            'email_verified' => 'boolean',
-        ]);
+        $validated = $request->validated();
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -57,15 +61,10 @@ class UserController extends BaseAdminController
             'userGroups' => UserGroup::all(),
         ]);
     }
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'user_groups' => 'array',
-            'user_groups.*' => 'exists:user_groups,id',
-            'email_verified' => 'boolean',
-        ]);
+        $validated = $request->validated();
+
         $user->update([
             'name' => $validated['name'],
             'email' => $validated['email'],

@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { ref } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { route } from '@/lib/route';
 
 interface UserGroup {
     id: number;
@@ -27,6 +28,8 @@ interface Props {
     };
     filters: {
         search?: string;
+        sort?: string;
+        direction?: 'asc' | 'desc';
     };
 }
 
@@ -43,10 +46,34 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const handleSearch = () => {
-    router.get(route('user.admin.user-groups.index'), { search: search.value }, {
+    router.get(route('user.admin.user-groups.index'), {
+        search: search.value,
+        sort: props.filters.sort,
+        direction: props.filters.direction,
+    }, {
         preserveState: true,
         replace: true,
     });
+};
+
+const sortBy = (column: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (props.filters.sort === column && props.filters.direction === 'asc') {
+        direction = 'desc';
+    }
+    router.get(route('user.admin.user-groups.index'), {
+        search: search.value,
+        sort: column,
+        direction: direction,
+    }, {
+        preserveState: true,
+        replace: true,
+    });
+};
+
+const getSortIcon = (column: string) => {
+    if (props.filters.sort !== column) return '↕️';
+    return props.filters.direction === 'asc' ? '↑' : '↓';
 };
 
 const deleteUserGroup = (userGroupId: number) => {
@@ -83,10 +110,16 @@ const deleteUserGroup = (userGroupId: number) => {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>{{ t('user::user-group.table.name') }}</TableHead>
-                            <TableHead>{{ t('user::user-group.table.description') }}</TableHead>
+                            <TableHead class="cursor-pointer select-none" @click="sortBy('name')">
+                                {{ t('user::user-group.table.name') }} {{ getSortIcon('name') }}
+                            </TableHead>
+                            <TableHead class="cursor-pointer select-none" @click="sortBy('description')">
+                                {{ t('user::user-group.table.description') }} {{ getSortIcon('description') }}
+                            </TableHead>
                             <TableHead>{{ t('user::user-group.table.permissions') }}</TableHead>
-                            <TableHead>{{ t('user::user-group.table.default') }}</TableHead>
+                            <TableHead class="cursor-pointer select-none" @click="sortBy('is_default')">
+                                {{ t('user::user-group.table.default') }} {{ getSortIcon('is_default') }}
+                            </TableHead>
                             <TableHead class="text-right">{{ t('user::user-group.table.actions') }}</TableHead>
                         </TableRow>
                     </TableHeader>

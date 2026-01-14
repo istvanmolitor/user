@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { ref } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { route } from '@/lib/route';
 
 interface Permission {
     id: number;
@@ -26,6 +27,8 @@ interface Props {
     };
     filters: {
         search?: string;
+        sort?: string;
+        direction?: 'asc' | 'desc';
     };
 }
 
@@ -42,10 +45,34 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const handleSearch = () => {
-    router.get(route('user.admin.permissions.index'), { search: search.value }, {
+    router.get(route('user.admin.permissions.index'), {
+        search: search.value,
+        sort: props.filters.sort,
+        direction: props.filters.direction,
+    }, {
         preserveState: true,
         replace: true,
     });
+};
+
+const sortBy = (column: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (props.filters.sort === column && props.filters.direction === 'asc') {
+        direction = 'desc';
+    }
+    router.get(route('user.admin.permissions.index'), {
+        search: search.value,
+        sort: column,
+        direction: direction,
+    }, {
+        preserveState: true,
+        replace: true,
+    });
+};
+
+const getSortIcon = (column: string) => {
+    if (props.filters.sort !== column) return '↕️';
+    return props.filters.direction === 'asc' ? '↑' : '↓';
 };
 
 const deletePermission = (permissionId: number) => {
@@ -82,8 +109,12 @@ const deletePermission = (permissionId: number) => {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>{{ t('user::permission.table.name') }}</TableHead>
-                            <TableHead>{{ t('user::permission.table.description') }}</TableHead>
+                            <TableHead class="cursor-pointer select-none" @click="sortBy('name')">
+                                {{ t('user::permission.table.name') }} {{ getSortIcon('name') }}
+                            </TableHead>
+                            <TableHead class="cursor-pointer select-none" @click="sortBy('description')">
+                                {{ t('user::permission.table.description') }} {{ getSortIcon('description') }}
+                            </TableHead>
                             <TableHead>{{ t('user::permission.table.userGroups') }}</TableHead>
                             <TableHead class="text-right">{{ t('user::permission.table.actions') }}</TableHead>
                         </TableRow>

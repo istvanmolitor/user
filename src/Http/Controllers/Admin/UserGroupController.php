@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Molitor\Admin\Controllers\BaseAdminController;
+use Molitor\User\Http\Requests\StoreUserGroupRequest;
+use Molitor\User\Http\Requests\UpdateUserGroupRequest;
 use Molitor\User\Models\Permission;
 use Molitor\User\Models\UserGroup;
 
@@ -18,12 +20,18 @@ class UserGroupController extends BaseAdminController
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%");
             })
+            ->when($request->input('sort'), function ($query, $sort) use ($request) {
+                $direction = $request->input('direction', 'asc');
+                $query->orderBy($sort, $direction);
+            }, function ($query) {
+                $query->orderBy('name', 'asc');
+            })
             ->paginate(10)
             ->withQueryString();
 
         return Inertia::render('User/Admin/UserGroups/Index', [
             'userGroups' => $userGroups,
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
     }
 
@@ -34,15 +42,9 @@ class UserGroupController extends BaseAdminController
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreUserGroupRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:user_groups,name',
-            'description' => 'nullable|string',
-            'is_default' => 'boolean',
-            'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,id',
-        ]);
+        $validated = $request->validated();
 
         $userGroup = UserGroup::create([
             'name' => $validated['name'],
@@ -68,15 +70,9 @@ class UserGroupController extends BaseAdminController
         ]);
     }
 
-    public function update(Request $request, UserGroup $userGroup)
+    public function update(UpdateUserGroupRequest $request, UserGroup $userGroup)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:user_groups,name,' . $userGroup->id,
-            'description' => 'nullable|string',
-            'is_default' => 'boolean',
-            'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,id',
-        ]);
+        $validated = $request->validated();
 
         $userGroup->update([
             'name' => $validated['name'],

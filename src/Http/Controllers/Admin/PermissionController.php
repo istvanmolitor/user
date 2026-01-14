@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Molitor\Admin\Controllers\BaseAdminController;
+use Molitor\User\Http\Requests\StorePermissionRequest;
+use Molitor\User\Http\Requests\UpdatePermissionRequest;
 use Molitor\User\Models\Permission;
 
 class PermissionController extends BaseAdminController
@@ -17,12 +19,18 @@ class PermissionController extends BaseAdminController
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%");
             })
+            ->when($request->input('sort'), function ($query, $sort) use ($request) {
+                $direction = $request->input('direction', 'asc');
+                $query->orderBy($sort, $direction);
+            }, function ($query) {
+                $query->orderBy('name', 'asc');
+            })
             ->paginate(10)
             ->withQueryString();
 
         return Inertia::render('User/Admin/Permissions/Index', [
             'permissions' => $permissions,
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
     }
 
@@ -31,12 +39,9 @@ class PermissionController extends BaseAdminController
         return Inertia::render('User/Admin/Permissions/Create');
     }
 
-    public function store(Request $request)
+    public function store(StorePermissionRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:permissions,name',
-            'description' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         Permission::create($validated);
 
@@ -53,12 +58,9 @@ class PermissionController extends BaseAdminController
         ]);
     }
 
-    public function update(Request $request, Permission $permission)
+    public function update(UpdatePermissionRequest $request, Permission $permission)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
-            'description' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $permission->update($validated);
 

@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { ref } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { route } from '@/lib/route';
 
 interface User {
     id: number;
@@ -27,6 +28,8 @@ interface Props {
     };
     filters: {
         search?: string;
+        sort?: string;
+        direction?: 'asc' | 'desc';
     };
 }
 
@@ -43,10 +46,34 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const handleSearch = () => {
-    router.get(route('user.admin.users.index'), { search: search.value }, {
+    router.get(route('user.admin.users.index'), {
+        search: search.value,
+        sort: props.filters.sort,
+        direction: props.filters.direction,
+    }, {
         preserveState: true,
         replace: true,
     });
+};
+
+const sortBy = (column: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (props.filters.sort === column && props.filters.direction === 'asc') {
+        direction = 'desc';
+    }
+    router.get(route('user.admin.users.index'), {
+        search: search.value,
+        sort: column,
+        direction: direction,
+    }, {
+        preserveState: true,
+        replace: true,
+    });
+};
+
+const getSortIcon = (column: string) => {
+    if (props.filters.sort !== column) return '↕️';
+    return props.filters.direction === 'asc' ? '↑' : '↓';
 };
 
 const deleteUser = (userId: number) => {
@@ -83,8 +110,12 @@ const deleteUser = (userId: number) => {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>{{ t('user::user.table.name') }}</TableHead>
-                            <TableHead>{{ t('user::user.table.email') }}</TableHead>
+                            <TableHead class="cursor-pointer select-none" @click="sortBy('name')">
+                                {{ t('user::user.table.name') }} {{ getSortIcon('name') }}
+                            </TableHead>
+                            <TableHead class="cursor-pointer select-none" @click="sortBy('email')">
+                                {{ t('user::user.table.email') }} {{ getSortIcon('email') }}
+                            </TableHead>
                             <TableHead>{{ t('user::user.table.user_groups') }}</TableHead>
                             <TableHead>{{ t('user::user.table.verified') }}</TableHead>
                             <TableHead class="text-right">{{ t('user::user.table.actions') }}</TableHead>
