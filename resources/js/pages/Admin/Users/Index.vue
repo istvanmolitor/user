@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import {
     Table,
@@ -14,7 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { trans } from 'laravel-vue-i18n';
 import { route } from '@/lib/route';
-import { AdminFilter, AdminPagination } from '@admin/components';
+import { AdminFilter, AdminPagination, AdminDeleteButton } from '@admin/components';
 import { useAdminSort } from '@admin/composables/useAdminSort';
 import Icon from '@/components/Icon.vue';
 
@@ -52,12 +52,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: t('user::common.admin'), href: '#' },
     { title: t('user::common.users'), href: route('user.admin.users.index') },
 ];
-
-const deleteUser = (userId: number) => {
-    if (confirm(t('user::user.messages.confirm_delete'))) {
-        router.delete(route('user.admin.users.destroy', userId));
-    }
-};
 </script>
 
 <template>
@@ -165,13 +159,11 @@ const deleteUser = (userId: number) => {
                                             t('user::user.actions.edit')
                                         }}</Button>
                                     </Link>
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        @click="deleteUser(user.id)"
-                                    >
-                                        {{ t('user::user.actions.delete') }}
-                                    </Button>
+                                    <AdminDeleteButton
+                                        :url="route('user.admin.users.destroy', user.id)"
+                                        :message="t('user::user.messages.confirm_delete')"
+                                        :button-text="t('user::user.actions.delete')"
+                                    />
                                 </div>
                             </TableCell>
                         </TableRow>

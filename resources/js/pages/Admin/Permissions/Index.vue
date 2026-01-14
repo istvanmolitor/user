@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { trans } from 'laravel-vue-i18n';
 import { route } from '@/lib/route';
-import { AdminFilter, AdminPagination } from '@admin/components';
+import { AdminFilter, AdminPagination, AdminDeleteButton } from '@admin/components';
 import { useAdminSort } from '@admin/composables/useAdminSort';
 import Icon from '@/components/Icon.vue';
 
@@ -44,12 +44,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: t('user::common.admin'), href: '#' },
     { title: t('user::common.permissions'), href: route('user.admin.permissions.index') },
 ];
-
-const deletePermission = (permissionId: number) => {
-    if (confirm(t('user::permission.messages.confirm_delete'))) {
-        router.delete(route('user.admin.permissions.destroy', permissionId));
-    }
-};
 </script>
 
 <template>
@@ -109,9 +103,11 @@ const deletePermission = (permissionId: number) => {
                                     <Link :href="route('user.admin.permissions.edit', permission.id)">
                                         <Button variant="outline" size="sm">{{ t('user::permission.actions.edit') }}</Button>
                                     </Link>
-                                    <Button variant="destructive" size="sm" @click="deletePermission(permission.id)">
-                                        {{ t('user::permission.actions.delete') }}
-                                    </Button>
+                                    <AdminDeleteButton
+                                        :url="route('user.admin.permissions.destroy', permission.id)"
+                                        :message="t('user::permission.messages.confirm_delete')"
+                                        :button-text="t('user::permission.actions.delete')"
+                                    />
                                 </div>
                             </TableCell>
                         </TableRow>
