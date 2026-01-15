@@ -102,6 +102,18 @@ Laravel csomag felhasználók, felhasználói csoportok és jogosultságok (ACL)
 ## Telepítés
 A csomag automatikusan regisztrálódik a szolgáltató révén.
 
+### Menü regisztrálása
+
+A felhasználói menü megjelenítéséhez regisztráld a `UserMenuBuilder`-t a `config/menu.php` fájlban:
+
+```php
+return [
+    \Molitor\User\Services\UserMenuBuilder::class,
+];
+```
+
+Ez automatikusan hozzáadja a felhasználók, csoportok és jogosultságok menüpontokat az admin menühöz.
+
 ### Seeder regisztrálása
 
 A jogosultságok és csoportok kezdeti beállításához regisztráld a seedert a `DatabaseSeeder.php` fájlban:
