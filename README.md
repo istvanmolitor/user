@@ -100,27 +100,24 @@ Laravel csomag felhasználók, felhasználói csoportok és jogosultságok (ACL)
 - Kényelmi szerviz az admin műveletekhez: `AclManagementService`
 
 ## Telepítés
+A csomag automatikusan regisztrálódik a szolgáltató révén.
 
-Monorepóban a csomag path repository-ként van bekötve, és a root `composer.json` már hivatkozik rá. Külső projektben a telepítés:
+### Seeder regisztrálása
 
-```bash
-composer require istvanmolitor/user
+A jogosultságok és csoportok kezdeti beállításához regisztráld a seedert a `DatabaseSeeder.php` fájlban:
+
+```php
+
+use Molitor\User\database\seeders\UserSeeder;
+
+public function run(): void
+{
+    $this->call([
+        // ...más seederek
+        UserSeeder::class,
+    ]);
+}
 ```
-
-A csomag Laravel Package Auto-Discovery-t használ, a `UserServiceProvider` automatikusan regisztrálódik.
-
-### Migrációk futtatása
-
-```bash
-php artisan migrate
-```
-
-Betöltött migrációk (táblák):
-
-- `user_groups` – csoportok
-- `permissions` – jogosultságok
-- `memberships` – felhasználó ↔ csoport kapcsoló tábla
-- `user_group_permissions` – csoport ↔ jogosultság kapcsoló tábla
 
 ### Fordítások
 
