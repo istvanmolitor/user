@@ -25,11 +25,6 @@ class UserServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'user');
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
 
-        // Publish Vue components
-        $this->publishes([
-            __DIR__ . '/../../resources/js/pages' => resource_path('js/pages/vendor/user'),
-        ], 'user-views');
-
         // Publish config
         $this->publishes([
             __DIR__ . '/../../config/navigation.php' => config_path('user-navigation.php'),

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
+import AppLayout from '@admin/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@admin/types';
 import { Head, Link } from '@inertiajs/vue3';
-import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@admin/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@admin/components/ui/table';
+import { Badge } from '@admin/components/ui/badge';
 import { trans } from 'laravel-vue-i18n';
-import { route } from '@/lib/route';
+import { route } from '@admin/lib/route';
 import { AdminFilter, AdminPagination, AdminDeleteButton } from '@admin/components';
 import { useAdminSort } from '@admin/composables/useAdminSort';
-import Icon from '@/components/Icon.vue';
+import Icon from '@admin/components/Icon.vue';
 
 interface Permission {
     id: number;

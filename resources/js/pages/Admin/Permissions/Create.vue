@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
+import AppLayout from '@admin/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@admin/types';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import InputError from '@/components/InputError.vue';
+import { Button } from '@admin/components/ui/button';
+import { Input } from '@admin/components/ui/input';
+import { Label } from '@admin/components/ui/label';
+import { Textarea } from '@admin/components/ui/textarea';
+import InputError from '@admin/components/InputError.vue';
 
 const form = useForm({
     name: '',
