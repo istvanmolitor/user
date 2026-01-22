@@ -21,7 +21,7 @@ class UserController extends BaseAdminController
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('Admin/Users/Index', [
+        return $this->view('Admin/Users/Index', [
             'users' => $users,
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);

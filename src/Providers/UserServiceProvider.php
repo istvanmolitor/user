@@ -25,10 +25,9 @@ class UserServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'user');
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
 
-        // Publish config
         $this->publishes([
-            __DIR__ . '/../../config/navigation.php' => config_path('user-navigation.php'),
-        ], 'user-config');
+            __DIR__ . '/../../resources/js/pages/Admin' => resource_path('js/pages/Admin/User'),
+        ], 'user-pages');
 
         Gate::define(
             'acl',
