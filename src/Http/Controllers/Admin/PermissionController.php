@@ -22,7 +22,7 @@ class PermissionController extends BaseAdminController
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('Admin/Permissions/Index', [
+        return Inertia::render('Admin/User/Permissions/Index', [
             'permissions' => $permissions,
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
@@ -30,7 +30,7 @@ class PermissionController extends BaseAdminController
 
     public function create(): Response
     {
-        return Inertia::render('Admin/Permissions/Create');
+        return Inertia::render('Admin/User/Permissions/Create');
     }
 
     public function store(StorePermissionRequest $request)
@@ -47,7 +47,7 @@ class PermissionController extends BaseAdminController
     {
         $permission->load('userGroups');
 
-        return Inertia::render('Admin/Permissions/Edit', [
+        return Inertia::render('Admin/User/Permissions/Edit', [
             'permission' => $permission,
         ]);
     }

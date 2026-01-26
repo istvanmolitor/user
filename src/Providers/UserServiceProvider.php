@@ -27,7 +27,7 @@ class UserServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../../resources/js/pages/Admin' => resource_path('js/pages/Admin/User'),
-        ], 'user-pages');
+        ], 'admin-pages');
 
         Gate::define(
             'acl',

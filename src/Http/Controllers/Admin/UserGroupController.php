@@ -23,7 +23,7 @@ class UserGroupController extends BaseAdminController
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('Admin/UserGroups/Index', [
+        return Inertia::render('Admin/User/UserGroups/Index', [
             'userGroups' => $userGroups,
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
@@ -31,7 +31,7 @@ class UserGroupController extends BaseAdminController
 
     public function create(): Response
     {
-        return Inertia::render('Admin/UserGroups/Create', [
+        return Inertia::render('Admin/User/UserGroups/Create', [
             'permissions' => Permission::all(),
         ]);
     }
@@ -58,7 +58,7 @@ class UserGroupController extends BaseAdminController
     {
         $userGroup->load('permissions');
 
-        return Inertia::render('Admin/UserGroups/Edit', [
+        return Inertia::render('Admin/User/UserGroups/Edit', [
             'userGroup' => $userGroup,
             'permissions' => Permission::all(),
         ]);

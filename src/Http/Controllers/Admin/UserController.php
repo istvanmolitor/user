@@ -21,14 +21,14 @@ class UserController extends BaseAdminController
             ->paginate(10)
             ->withQueryString();
 
-        return $this->view('Admin/Users/Index', [
+        return Inertia::render('Admin/User/Users/Index', [
             'users' => $users,
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
     }
     public function create(): Response
     {
-        return Inertia::render('Admin/Users/Create', [
+        return Inertia::render('Admin/User/Users/Create', [
             'userGroups' => UserGroup::all(),
         ]);
     }
@@ -51,7 +51,7 @@ class UserController extends BaseAdminController
     public function edit(User $user): Response
     {
         $user->load('userGroups');
-        return Inertia::render('Admin/Users/Edit', [
+        return Inertia::render('Admin/User/Users/Edit', [
             'user' => $user,
             'userGroups' => UserGroup::all(),
         ]);
