@@ -1,38 +1,45 @@
 <?php
 namespace Molitor\User\Http\Controllers\Admin;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
-use Molitor\Admin\Controllers\BaseAdminController;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
 use Molitor\Admin\Traits\HasAdminFilters;
 use Molitor\User\Http\Requests\StoreUserRequest;
 use Molitor\User\Http\Requests\UpdateUserRequest;
+use Molitor\User\Http\Resources\UserResource;
+use Molitor\User\Http\Resources\UserGroupResource;
 use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
 
-class UserController extends BaseAdminController
+class UserController extends Controller
 {
     use HasAdminFilters;
 
-    public function index(Request $request): Response
+    public function index(Request $request): JsonResponse
     {
         $query = User::with('userGroups');
         $users = $this->applyAdminFilters($query, $request, ['name', 'email'])
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('Admin/User/Users/Index', [
-            'users' => $users,
+        return response()->json([
+            'data' => UserResource::collection($users->items()),
+            'meta' => [
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
+                'per_page' => $users->perPage(),
+                'total' => $users->total(),
+            ],
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
     }
-    public function create(): Response
+    public function create(): JsonResponse
     {
-        return Inertia::render('Admin/User/Users/Create', [
-            'userGroups' => UserGroup::all(),
+        return response()->json([
+            'user_groups' => UserGroupResource::collection(UserGroup::all()),
         ]);
     }
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
@@ -45,18 +52,24 @@ class UserController extends BaseAdminController
         if (isset($validated['user_groups'])) {
             $user->userGroups()->sync($validated['user_groups']);
         }
-        return redirect()->route('user.admin.users.index')
-            ->with('success', __('user::user.messages.created'));
+
+        $user->load('userGroups');
+
+        return response()->json([
+            'data' => new UserResource($user),
+            'message' => __('user::user.messages.created'),
+        ], 201);
     }
-    public function edit(User $user): Response
+    public function edit(User $user): JsonResponse
     {
         $user->load('userGroups');
-        return Inertia::render('Admin/User/Users/Edit', [
-            'user' => $user,
-            'userGroups' => UserGroup::all(),
+
+        return response()->json([
+            'data' => new UserResource($user),
+            'user_groups' => UserGroupResource::collection(UserGroup::all()),
         ]);
     }
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
         $validated = $request->validated();
 
@@ -68,12 +81,20 @@ class UserController extends BaseAdminController
         if (isset($validated['user_groups'])) {
             $user->userGroups()->sync($validated['user_groups']);
         }
-        return back()->with('success', __('user::user.messages.updated'));
+
+        $user->load('userGroups');
+
+        return response()->json([
+            'data' => new UserResource($user),
+            'message' => __('user::user.messages.updated'),
+        ]);
     }
-    public function destroy(User $user)
+    public function destroy(User $user): JsonResponse
     {
         $user->delete();
-        return redirect()->route('user.admin.users.index')
-            ->with('success', __('user::user.messages.deleted'));
+
+        return response()->json([
+            'message' => __('user::user.messages.deleted'),
+        ]);
     }
 }

@@ -23,7 +23,7 @@ class UserServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'user');
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
 
         $this->publishes([
             __DIR__ . '/../../resources/js/pages/Admin' => resource_path('js/pages/Admin/User'),

@@ -3,40 +3,47 @@
 namespace Molitor\User\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
-use Molitor\Admin\Controllers\BaseAdminController;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
 use Molitor\Admin\Traits\HasAdminFilters;
 use Molitor\User\Http\Requests\StoreUserGroupRequest;
 use Molitor\User\Http\Requests\UpdateUserGroupRequest;
+use Molitor\User\Http\Resources\UserGroupResource;
+use Molitor\User\Http\Resources\PermissionResource;
 use Molitor\User\Models\Permission;
 use Molitor\User\Models\UserGroup;
 
-class UserGroupController extends BaseAdminController
+class UserGroupController extends Controller
 {
     use HasAdminFilters;
 
-    public function index(Request $request): Response
+    public function index(Request $request): JsonResponse
     {
         $query = UserGroup::with('permissions');
         $userGroups = $this->applyAdminFilters($query, $request, ['name', 'description'])
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('Admin/User/UserGroups/Index', [
-            'userGroups' => $userGroups,
+        return response()->json([
+            'data' => UserGroupResource::collection($userGroups->items()),
+            'meta' => [
+                'current_page' => $userGroups->currentPage(),
+                'last_page' => $userGroups->lastPage(),
+                'per_page' => $userGroups->perPage(),
+                'total' => $userGroups->total(),
+            ],
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
     }
 
-    public function create(): Response
+    public function create(): JsonResponse
     {
-        return Inertia::render('Admin/User/UserGroups/Create', [
-            'permissions' => Permission::all(),
+        return response()->json([
+            'permissions' => PermissionResource::collection(Permission::all()),
         ]);
     }
 
-    public function store(StoreUserGroupRequest $request)
+    public function store(StoreUserGroupRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
@@ -50,21 +57,25 @@ class UserGroupController extends BaseAdminController
             $userGroup->permissions()->sync($validated['permissions']);
         }
 
-        return redirect()->route('user.admin.user-groups.index')
-            ->with('success', __('user::user_group.messages.created'));
+        $userGroup->load('permissions');
+
+        return response()->json([
+            'data' => new UserGroupResource($userGroup),
+            'message' => __('user::user_group.messages.created'),
+        ], 201);
     }
 
-    public function edit(UserGroup $userGroup): Response
+    public function edit(UserGroup $userGroup): JsonResponse
     {
         $userGroup->load('permissions');
 
-        return Inertia::render('Admin/User/UserGroups/Edit', [
-            'userGroup' => $userGroup,
-            'permissions' => Permission::all(),
+        return response()->json([
+            'data' => new UserGroupResource($userGroup),
+            'permissions' => PermissionResource::collection(Permission::all()),
         ]);
     }
 
-    public function update(UpdateUserGroupRequest $request, UserGroup $userGroup)
+    public function update(UpdateUserGroupRequest $request, UserGroup $userGroup): JsonResponse
     {
         $validated = $request->validated();
 
@@ -78,15 +89,21 @@ class UserGroupController extends BaseAdminController
             $userGroup->permissions()->sync($validated['permissions']);
         }
 
-        return back()->with('success', __('user::user_group.messages.updated'));
+        $userGroup->load('permissions');
+
+        return response()->json([
+            'data' => new UserGroupResource($userGroup),
+            'message' => __('user::user_group.messages.updated'),
+        ]);
     }
 
-    public function destroy(UserGroup $userGroup)
+    public function destroy(UserGroup $userGroup): JsonResponse
     {
         $userGroup->delete();
 
-        return redirect()->route('user.admin.user-groups.index')
-            ->with('success', __('user::user_group.messages.deleted'));
+        return response()->json([
+            'message' => __('user::user_group.messages.deleted'),
+        ]);
     }
 }
 
