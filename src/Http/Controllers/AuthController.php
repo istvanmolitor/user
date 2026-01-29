@@ -67,7 +67,7 @@ class AuthController extends Controller
     {
         /** @var User $user */
         $user = Auth::user();
-        $user->load('userGroups');
+        $user->load('userGroups.permissions');
 
         return response()->json([
             'data' => new UserResource($user),
