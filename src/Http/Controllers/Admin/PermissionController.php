@@ -53,6 +53,15 @@ class PermissionController extends Controller
         ], 201);
     }
 
+    public function show(Permission $permission): JsonResponse
+    {
+        $permission->load('userGroups');
+
+        return response()->json([
+            'data' => new PermissionResource($permission),
+        ]);
+    }
+
     public function edit(Permission $permission): JsonResponse
     {
         $permission->load('userGroups');

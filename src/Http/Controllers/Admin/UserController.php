@@ -60,6 +60,14 @@ class UserController extends Controller
             'message' => __('user::user.messages.created'),
         ], 201);
     }
+    public function show(User $user): JsonResponse
+    {
+        $user->load('userGroups');
+
+        return response()->json([
+            'data' => new UserResource($user),
+        ]);
+    }
     public function edit(User $user): JsonResponse
     {
         $user->load('userGroups');

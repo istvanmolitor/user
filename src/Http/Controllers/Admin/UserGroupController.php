@@ -65,6 +65,16 @@ class UserGroupController extends Controller
         ], 201);
     }
 
+    public function show(UserGroup $userGroup): JsonResponse
+    {
+        $userGroup->load('permissions');
+
+        return response()->json([
+            'data' => new UserGroupResource($userGroup),
+            'permissions' => PermissionResource::collection(Permission::all()),
+        ]);
+    }
+
     public function edit(UserGroup $userGroup): JsonResponse
     {
         $userGroup->load('permissions');
