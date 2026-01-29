@@ -11,6 +11,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
+        "laravel/sanctum": "^4.0",
         "istvanmolitor/admin": "dev-main"
     },
     "autoload": {

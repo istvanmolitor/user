@@ -23,7 +23,11 @@ class UserServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'user');
-        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+
+        // Load API routes with /api prefix
+        $this->app->make(\Illuminate\Routing\Router::class)
+            ->prefix('api')
+            ->group(__DIR__ . '/../routes/api.php');
 
         $this->publishes([
             __DIR__ . '/../../resources/js/pages/Admin' => resource_path('js/pages/Admin/User'),

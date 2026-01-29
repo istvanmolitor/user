@@ -2,6 +2,11 @@
 
 This package provides user management functionality with both Filament and Inertia Vue admin interfaces.
 
+## Requirements
+
+- Laravel 11+
+- **Laravel Sanctum ^4.0** - Required for API authentication and token management
+
 ## Features
 
 - User management
@@ -15,6 +20,50 @@ This package provides user management functionality with both Filament and Inert
 ## Installation
 
 The package is automatically loaded via the service provider.
+
+### Laravel Sanctum Setup
+
+This package requires Laravel Sanctum for API authentication. If not already installed:
+
+1. Install Sanctum:
+```bash
+composer require laravel/sanctum
+```
+
+2. Publish Sanctum configuration and migrations:
+```bash
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+```
+
+3. Run migrations:
+```bash
+php artisan migrate
+```
+
+4. Add `HasApiTokens` trait to your User model:
+```php
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable;
+    // ...
+}
+```
+
+5. Add Sanctum guard to `config/auth.php`:
+```php
+'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+    'sanctum' => [
+        'driver' => 'sanctum',
+        'provider' => 'users',
+    ],
+],
+```
 
 ### Publishing Vue Components
 
@@ -32,11 +81,55 @@ cp -r packages/user/resources/js/* resources/js/pages/User/
 
 ## Routes
 
+### API Authentication Routes
+
+The package provides API authentication endpoints:
+
+- `POST /api/auth/login` - User login (returns token)
+- `POST /api/auth/logout` - User logout (requires authentication)
+- `GET /api/auth/me` - Get authenticated user (requires authentication)
+
+Example login request:
+```json
+{
+  "email": "user@example.com",
+  "password": "password",
+  "device_name": "web_browser"
+}
+```
+
+Example response:
+```json
+{
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "user@example.com",
+    "email_verified_at": null,
+    "created_at": "2024-01-01T00:00:00.000000Z",
+    "updated_at": "2024-01-01T00:00:00.000000Z"
+  },
+  "token": "1|abcdef123456...",
+  "token_type": "Bearer"
+}
+```
+
+### Admin Routes
+
 The Inertia admin routes are available under `/admin/user`:
 
 - `/admin/user/users` - User management
 - `/admin/user/user-groups` - User group management
 - `/admin/user/permissions` - Permission management
+
+API admin routes (requires authentication):
+
+- `GET /api/admin/user/users` - List users
+- `POST /api/admin/user/users` - Create user
+- `GET /api/admin/user/users/{id}` - Get user
+- `PUT /api/admin/user/users/{id}` - Update user
+- `DELETE /api/admin/user/users/{id}` - Delete user
+- User groups and permissions have similar CRUD endpoints
 
 ## Usage
 

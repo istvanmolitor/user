@@ -61,7 +61,7 @@ class UserGroupController extends Controller
 
         return response()->json([
             'data' => new UserGroupResource($userGroup),
-            'message' => __('user::user_group.messages.created'),
+            'message' => __('user::user-group.messages.created'),
         ], 201);
     }
 
@@ -93,7 +93,7 @@ class UserGroupController extends Controller
 
         return response()->json([
             'data' => new UserGroupResource($userGroup),
-            'message' => __('user::user_group.messages.updated'),
+            'message' => __('user::user-group.messages.updated'),
         ]);
     }
 
@@ -102,7 +102,7 @@ class UserGroupController extends Controller
         $userGroup->delete();
 
         return response()->json([
-            'message' => __('user::user_group.messages.deleted'),
+            'message' => __('user::user-group.messages.deleted'),
         ]);
     }
 }
