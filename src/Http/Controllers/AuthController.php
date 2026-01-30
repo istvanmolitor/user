@@ -5,6 +5,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Molitor\User\Http\Requests\ChangePasswordRequest;
 use Molitor\User\Http\Requests\LoginRequest;
 use Molitor\User\Http\Resources\AuthResource;
 use Molitor\User\Http\Resources\AuthUserResource;
@@ -60,6 +61,31 @@ class AuthController extends Controller
         $user->load('userGroups.permissions');
         return response()->json([
             'data' => new AuthUserResource($user),
+        ]);
+    }
+
+    /**
+     * Change the authenticated user's password.
+     */
+    public function changePassword(ChangePasswordRequest $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $validated = $request->validated();
+
+        // Update password
+        $user->password = Hash::make($validated['password']);
+        $user->save();
+
+        // Optionally revoke all other tokens except current one
+        $currentToken = $user->currentAccessToken();
+        if ($currentToken) {
+            $user->tokens()->where('id', '!=', $currentToken->id)->delete();
+        }
+
+        return response()->json([
+            'message' => 'A jelszó sikeresen megváltozott.',
         ]);
     }
 }

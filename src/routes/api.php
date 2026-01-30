@@ -16,6 +16,7 @@ Route::prefix('auth')
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('logout', [AuthController::class, 'logout'])->name('logout');
             Route::get('me', [AuthController::class, 'me'])->name('me');
+            Route::post('change-password', [AuthController::class, 'changePassword'])->name('change-password');
         });
     });
 
