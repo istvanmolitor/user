@@ -24,6 +24,8 @@ class StorePermissionRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:permissions,name',
             'description' => 'nullable|string',
+            'user_groups' => 'nullable|array',
+            'user_groups.*' => 'exists:user_groups,id',
         ];
     }
 }

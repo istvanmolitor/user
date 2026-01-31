@@ -8,6 +8,7 @@ use Molitor\User\Http\Requests\StoreUserRequest;
 use Molitor\User\Http\Requests\UpdateUserRequest;
 use Molitor\User\Http\Resources\UserResource;
 use Molitor\User\Http\Resources\UserGroupResource;
+use Molitor\User\Http\Resources\UserGroupSimpleResource;
 use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
 
@@ -36,7 +37,7 @@ class UserController extends Controller
     public function create(): JsonResponse
     {
         return response()->json([
-            'user_groups' => UserGroupResource::collection(UserGroup::all()),
+            'user_groups' => UserGroupSimpleResource::collection(UserGroup::all()),
         ]);
     }
     public function store(StoreUserRequest $request): JsonResponse
@@ -74,7 +75,7 @@ class UserController extends Controller
 
         return response()->json([
             'data' => new UserResource($user),
-            'user_groups' => UserGroupResource::collection(UserGroup::all()),
+            'user_groups' => UserGroupSimpleResource::collection(UserGroup::all()),
         ]);
     }
     public function update(UpdateUserRequest $request, User $user): JsonResponse

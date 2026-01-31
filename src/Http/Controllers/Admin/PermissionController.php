@@ -9,7 +9,9 @@ use Molitor\Admin\Traits\HasAdminFilters;
 use Molitor\User\Http\Requests\StorePermissionRequest;
 use Molitor\User\Http\Requests\UpdatePermissionRequest;
 use Molitor\User\Http\Resources\PermissionResource;
+use Molitor\User\Http\Resources\UserGroupSimpleResource;
 use Molitor\User\Models\Permission;
+use Molitor\User\Models\UserGroup;
 
 class PermissionController extends Controller
 {
@@ -37,7 +39,7 @@ class PermissionController extends Controller
     public function create(): JsonResponse
     {
         return response()->json([
-            'success' => true,
+            'user_groups' => UserGroupSimpleResource::collection(UserGroup::all()),
         ]);
     }
 
@@ -45,7 +47,14 @@ class PermissionController extends Controller
     {
         $validated = $request->validated();
 
-        $permission = Permission::create($validated);
+        $permission = Permission::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        if (isset($validated['user_groups'])) {
+            $permission->userGroups()->sync($validated['user_groups']);
+        }
 
         return response()->json([
             'data' => new PermissionResource($permission),
@@ -68,6 +77,7 @@ class PermissionController extends Controller
 
         return response()->json([
             'data' => new PermissionResource($permission),
+            'user_groups' => UserGroupSimpleResource::collection(UserGroup::all()),
         ]);
     }
 
@@ -75,7 +85,15 @@ class PermissionController extends Controller
     {
         $validated = $request->validated();
 
-        $permission->update($validated);
+        $permission->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        if (isset($validated['user_groups'])) {
+            $permission->userGroups()->sync($validated['user_groups']);
+        }
+
         $permission->load('userGroups');
 
         return response()->json([

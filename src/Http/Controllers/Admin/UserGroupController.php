@@ -10,6 +10,7 @@ use Molitor\User\Http\Requests\StoreUserGroupRequest;
 use Molitor\User\Http\Requests\UpdateUserGroupRequest;
 use Molitor\User\Http\Resources\UserGroupResource;
 use Molitor\User\Http\Resources\PermissionResource;
+use Molitor\User\Http\Resources\PermissionSimpleResource;
 use Molitor\User\Models\Permission;
 use Molitor\User\Models\UserGroup;
 
@@ -39,7 +40,7 @@ class UserGroupController extends Controller
     public function create(): JsonResponse
     {
         return response()->json([
-            'permissions' => PermissionResource::collection(Permission::all()),
+            'permissions' => PermissionSimpleResource::collection(Permission::all()),
         ]);
     }
 
@@ -71,7 +72,7 @@ class UserGroupController extends Controller
 
         return response()->json([
             'data' => new UserGroupResource($userGroup),
-            'permissions' => PermissionResource::collection(Permission::all()),
+            'permissions' => PermissionSimpleResource::collection(Permission::all()),
         ]);
     }
 
@@ -81,7 +82,7 @@ class UserGroupController extends Controller
 
         return response()->json([
             'data' => new UserGroupResource($userGroup),
-            'permissions' => PermissionResource::collection(Permission::all()),
+            'permissions' => PermissionSimpleResource::collection(Permission::all()),
         ]);
     }
 

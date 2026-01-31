@@ -26,11 +26,11 @@ Route::prefix('admin/user')
     ->name('user.admin.')
     ->group(function () {
         // Users
-        Route::apiResource('users', UserController::class);
+        Route::resource('users', UserController::class);
 
         // User Groups
-        Route::apiResource('user-groups', UserGroupController::class);
+        Route::resource('user-groups', UserGroupController::class);
 
         // Permissions
-        Route::apiResource('permissions', PermissionController::class);
+        Route::resource('permissions', PermissionController::class);
     });

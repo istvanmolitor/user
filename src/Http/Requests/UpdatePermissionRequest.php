@@ -24,6 +24,8 @@ class UpdatePermissionRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:permissions,name,' . $this->route('permission')->id,
             'description' => 'nullable|string',
+            'user_groups' => 'nullable|array',
+            'user_groups.*' => 'exists:user_groups,id',
         ];
     }
 }
