@@ -10,8 +10,27 @@ use Molitor\User\Http\Requests\LoginRequest;
 use Molitor\User\Http\Resources\AuthResource;
 use Molitor\User\Http\Resources\AuthUserResource;
 use Molitor\User\Models\User;
+use OpenApi\Attributes as OA;
+
 class AuthController extends Controller
 {
+    #[OA\Post(
+        path: "/api/user/login",
+        summary: "Handle a login request",
+        tags: ["Auth"],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: "#/components/schemas/LoginRequest")
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Success",
+                content: new OA\JsonContent(ref: "#/components/schemas/AuthResponse")
+            ),
+            new OA\Response(response: 422, description: "Validation error")
+        ]
+    )]
     /**
      * Handle a login request to the application.
      */
@@ -38,6 +57,16 @@ class AuthController extends Controller
             ])
         );
     }
+
+    #[OA\Post(
+        path: "/api/user/logout",
+        summary: "Log the user out",
+        tags: ["Auth"],
+        security: [["sanctum" => []]],
+        responses: [
+            new OA\Response(response: 200, description: "Success")
+        ]
+    )]
     /**
      * Log the user out (Invalidate the token).
      */
@@ -51,6 +80,24 @@ class AuthController extends Controller
             'message' => __('user::auth.logged_out'),
         ]);
     }
+
+    #[OA\Get(
+        path: "/api/user/me",
+        summary: "Get authenticated user",
+        tags: ["Auth"],
+        security: [["sanctum" => []]],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Success",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "data", ref: "#/components/schemas/AuthUser")
+                    ]
+                )
+            )
+        ]
+    )]
     /**
      * Get the authenticated user with permissions.
      */
@@ -64,6 +111,28 @@ class AuthController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: "/api/user/change-password",
+        summary: "Change user password",
+        tags: ["Auth"],
+        security: [["sanctum" => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: "#/components/schemas/ChangePasswordRequest")
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Success",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "message", type: "string", example: "A jelszó sikeresen megváltozott.")
+                    ]
+                )
+            ),
+            new OA\Response(response: 422, description: "Validation error")
+        ]
+    )]
     /**
      * Change the authenticated user's password.
      */

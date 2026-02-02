@@ -3,7 +3,25 @@
 namespace Molitor\User\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: "UpdateUserGroupRequest",
+    title: "Update User Group Request",
+    description: "Data for updating a user group",
+    required: ["name"],
+    properties: [
+        new OA\Property(property: "name", type: "string", example: "Moderators Updated"),
+        new OA\Property(property: "description", type: "string", example: "Limited access (updated)", nullable: true),
+        new OA\Property(property: "is_default", type: "boolean", example: true),
+        new OA\Property(
+            property: "permissions",
+            type: "array",
+            items: new OA\Items(type: "integer"),
+            example: [1]
+        )
+    ]
+)]
 class UpdateUserGroupRequest extends FormRequest
 {
     /**

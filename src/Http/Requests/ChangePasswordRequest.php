@@ -4,7 +4,18 @@ namespace Molitor\User\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: "ChangePasswordRequest",
+    title: "Change Password Request",
+    description: "Data for changing password",
+    required: ["password", "password_confirmation"],
+    properties: [
+        new OA\Property(property: "password", type: "string", format: "password", example: "newpassword123"),
+        new OA\Property(property: "password_confirmation", type: "string", format: "password", example: "newpassword123")
+    ]
+)]
 class ChangePasswordRequest extends FormRequest
 {
     /**

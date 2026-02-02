@@ -3,7 +3,25 @@
 namespace Molitor\User\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: "StoreUserRequest",
+    title: "Store User Request",
+    description: "Data for creating a user",
+    required: ["name", "email"],
+    properties: [
+        new OA\Property(property: "name", type: "string", example: "Jane Doe"),
+        new OA\Property(property: "email", type: "string", format: "email", example: "jane@example.com"),
+        new OA\Property(property: "email_verified", type: "boolean", example: true),
+        new OA\Property(
+            property: "user_groups",
+            type: "array",
+            items: new OA\Items(type: "integer"),
+            example: [1, 2]
+        )
+    ]
+)]
 class StoreUserRequest extends FormRequest
 {
     /**
