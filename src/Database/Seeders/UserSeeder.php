@@ -1,6 +1,6 @@
 <?php
 
-namespace Molitor\User\database\seeders;
+namespace Molitor\User\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Molitor\User\Services\AclManagementService;
