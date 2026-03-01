@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Molitor\User\Http\Controllers\Admin\PermissionController;
-use Molitor\User\Http\Controllers\Admin\UserController;
-use Molitor\User\Http\Controllers\Admin\UserGroupController;
+use Molitor\User\Http\Controllers\PermissionController;
+use Molitor\User\Http\Controllers\UserController;
+use Molitor\User\Http\Controllers\UserGroupController;
 use Molitor\User\Http\Controllers\AuthController;
 
 // Authentication routes
@@ -23,7 +23,7 @@ Route::prefix('auth')
 // Admin routes
 Route::prefix('admin/user')
     ->middleware(['api', 'auth:sanctum'])
-    ->name('user.admin.')
+    ->name('user.')
     ->group(function () {
         // Users
         Route::resource('users', UserController::class);

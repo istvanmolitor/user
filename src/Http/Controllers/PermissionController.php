@@ -1,26 +1,27 @@
 <?php
-namespace Molitor\User\Http\Controllers\Admin;
+
+namespace Molitor\User\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Molitor\Admin\Traits\HasAdminFilters;
-use Molitor\User\Http\Requests\StoreUserRequest;
-use Molitor\User\Http\Requests\UpdateUserRequest;
-use Molitor\User\Http\Resources\UserResource;
-use Molitor\User\Http\Resources\UserGroupResource;
+use Molitor\User\Http\Requests\StorePermissionRequest;
+use Molitor\User\Http\Requests\UpdatePermissionRequest;
+use Molitor\User\Http\Resources\PermissionResource;
 use Molitor\User\Http\Resources\UserGroupSimpleResource;
-use Molitor\User\Models\User;
+use Molitor\User\Models\Permission;
 use Molitor\User\Models\UserGroup;
 use OpenApi\Attributes as OA;
 
-class UserController extends Controller
+class PermissionController extends Controller
 {
     use HasAdminFilters;
 
     #[OA\Get(
-        path: "/api/admin/users",
-        summary: "List all users",
-        tags: ["Users"],
+        path: "/api/admin/permissions",
+        summary: "List all permissions",
+        tags: ["Permissions"],
         responses: [
             new OA\Response(
                 response: 200,
@@ -30,7 +31,7 @@ class UserController extends Controller
                         new OA\Property(
                             property: "data",
                             type: "array",
-                            items: new OA\Items(ref: "#/components/schemas/User")
+                            items: new OA\Items(ref: "#/components/schemas/Permission")
                         ),
                         new OA\Property(
                             property: "meta",
@@ -49,27 +50,27 @@ class UserController extends Controller
     )]
     public function index(Request $request): JsonResponse
     {
-        $query = User::with('userGroups');
-        $users = $this->applyAdminFilters($query, $request, ['name', 'email'])
+        $query = Permission::with('userGroups');
+        $permissions = $this->applyAdminFilters($query, $request, ['name', 'description'])
             ->paginate(10)
             ->withQueryString();
 
         return response()->json([
-            'data' => UserResource::collection($users->items()),
+            'data' => PermissionResource::collection($permissions->items()),
             'meta' => [
-                'current_page' => $users->currentPage(),
-                'last_page' => $users->lastPage(),
-                'per_page' => $users->perPage(),
-                'total' => $users->total(),
+                'current_page' => $permissions->currentPage(),
+                'last_page' => $permissions->lastPage(),
+                'per_page' => $permissions->perPage(),
+                'total' => $permissions->total(),
             ],
             'filters' => $request->only(['search', 'sort', 'direction']),
         ]);
     }
 
     #[OA\Get(
-        path: "/api/admin/users/create",
-        summary: "Show form for creating a user",
-        tags: ["Users"],
+        path: "/api/admin/permissions/create",
+        summary: "Show form for creating a permission",
+        tags: ["Permissions"],
         responses: [
             new OA\Response(response: 200, description: "Success")
         ]
@@ -82,12 +83,12 @@ class UserController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/admin/users",
-        summary: "Store a new user",
-        tags: ["Users"],
+        path: "/api/admin/permissions",
+        summary: "Store a new permission",
+        tags: ["Permissions"],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/StoreUserRequest")
+            content: new OA\JsonContent(ref: "#/components/schemas/StorePermissionRequest")
         ),
         responses: [
             new OA\Response(
@@ -95,7 +96,7 @@ class UserController extends Controller
                 description: "Created",
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "data", ref: "#/components/schemas/User"),
+                        new OA\Property(property: "data", ref: "#/components/schemas/Permission"),
                         new OA\Property(property: "message", type: "string")
                     ]
                 )
@@ -103,34 +104,31 @@ class UserController extends Controller
             new OA\Response(response: 422, description: "Validation error")
         ]
     )]
-    public function store(StoreUserRequest $request): JsonResponse
+    public function store(StorePermissionRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
-        $user = User::create([
+        $permission = Permission::create([
             'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => bcrypt(\Illuminate\Support\Str::random(32)),
-            'email_verified_at' => $validated['email_verified'] ?? false ? now() : null,
+            'description' => $validated['description'] ?? null,
         ]);
+
         if (isset($validated['user_groups'])) {
-            $user->userGroups()->sync($validated['user_groups']);
+            $permission->userGroups()->sync($validated['user_groups']);
         }
 
-        $user->load('userGroups');
-
         return response()->json([
-            'data' => new UserResource($user),
-            'message' => __('user::user.messages.created'),
+            'data' => new PermissionResource($permission),
+            'message' => __('user::permission.messages.created'),
         ], 201);
     }
 
     #[OA\Get(
-        path: "/api/admin/users/{user}",
-        summary: "Display a specific user",
-        tags: ["Users"],
+        path: "/api/admin/permissions/{permission}",
+        summary: "Display a specific permission",
+        tags: ["Permissions"],
         parameters: [
-            new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+            new OA\Parameter(name: "permission", in: "path", required: true, schema: new OA\Schema(type: "integer"))
         ],
         responses: [
             new OA\Response(
@@ -138,54 +136,54 @@ class UserController extends Controller
                 description: "Success",
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "data", ref: "#/components/schemas/User")
+                        new OA\Property(property: "data", ref: "#/components/schemas/Permission")
                     ]
                 )
             ),
             new OA\Response(response: 404, description: "Not found")
         ]
     )]
-    public function show(User $user): JsonResponse
+    public function show(Permission $permission): JsonResponse
     {
-        $user->load('userGroups');
+        $permission->load('userGroups');
 
         return response()->json([
-            'data' => new UserResource($user),
+            'data' => new PermissionResource($permission),
         ]);
     }
 
     #[OA\Get(
-        path: "/api/admin/users/{user}/edit",
-        summary: "Show form for editing a user",
-        tags: ["Users"],
+        path: "/api/admin/permissions/{permission}/edit",
+        summary: "Show form for editing a permission",
+        tags: ["Permissions"],
         parameters: [
-            new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+            new OA\Parameter(name: "permission", in: "path", required: true, schema: new OA\Schema(type: "integer"))
         ],
         responses: [
             new OA\Response(response: 200, description: "Success"),
             new OA\Response(response: 404, description: "Not found")
         ]
     )]
-    public function edit(User $user): JsonResponse
+    public function edit(Permission $permission): JsonResponse
     {
-        $user->load('userGroups');
+        $permission->load('userGroups');
 
         return response()->json([
-            'data' => new UserResource($user),
+            'data' => new PermissionResource($permission),
             'user_groups' => UserGroupSimpleResource::collection(UserGroup::all()),
         ]);
     }
 
     #[OA\Put(
-        path: "/api/admin/users/{user}",
-        summary: "Update a user",
-        tags: ["Users"],
+        path: "/api/admin/permissions/{permission}",
+        summary: "Update a permission",
+        tags: ["Permissions"],
         parameters: [
-            new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+            new OA\Parameter(name: "permission", in: "path", required: true, schema: new OA\Schema(type: "integer"))
         ],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/UpdateUserRequest")
+            content: new OA\JsonContent(ref: "#/components/schemas/UpdatePermissionRequest")
         ),
         responses: [
             new OA\Response(
@@ -193,7 +191,7 @@ class UserController extends Controller
                 description: "Success",
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "data", ref: "#/components/schemas/User"),
+                        new OA\Property(property: "data", ref: "#/components/schemas/Permission"),
                         new OA\Property(property: "message", type: "string")
                     ]
                 )
@@ -202,45 +200,46 @@ class UserController extends Controller
             new OA\Response(response: 404, description: "Not found")
         ]
     )]
-    public function update(UpdateUserRequest $request, User $user): JsonResponse
+    public function update(UpdatePermissionRequest $request, Permission $permission): JsonResponse
     {
         $validated = $request->validated();
 
-        $user->update([
+        $permission->update([
             'name' => $validated['name'],
-            'email' => $validated['email'],
-            'email_verified_at' => $validated['email_verified'] ?? false ? now() : null,
+            'description' => $validated['description'] ?? null,
         ]);
+
         if (isset($validated['user_groups'])) {
-            $user->userGroups()->sync($validated['user_groups']);
+            $permission->userGroups()->sync($validated['user_groups']);
         }
 
-        $user->load('userGroups');
+        $permission->load('userGroups');
 
         return response()->json([
-            'data' => new UserResource($user),
-            'message' => __('user::user.messages.updated'),
+            'data' => new PermissionResource($permission),
+            'message' => __('user::permission.messages.updated'),
         ]);
     }
 
     #[OA\Delete(
-        path: "/api/admin/users/{user}",
-        summary: "Delete a user",
-        tags: ["Users"],
+        path: "/api/admin/permissions/{permission}",
+        summary: "Delete a permission",
+        tags: ["Permissions"],
         parameters: [
-            new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+            new OA\Parameter(name: "permission", in: "path", required: true, schema: new OA\Schema(type: "integer"))
         ],
         responses: [
             new OA\Response(response: 200, description: "Success"),
             new OA\Response(response: 404, description: "Not found")
         ]
     )]
-    public function destroy(User $user): JsonResponse
+    public function destroy(Permission $permission): JsonResponse
     {
-        $user->delete();
+        $permission->delete();
 
         return response()->json([
-            'message' => __('user::user.messages.deleted'),
+            'message' => __('user::permission.messages.deleted'),
         ]);
     }
 }
+
