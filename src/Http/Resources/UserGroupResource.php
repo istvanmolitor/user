@@ -33,8 +33,8 @@ class UserGroupResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'is_default' => $this->is_default,
-            'created_at' => $this->created_at?->toIso8601String(),
-            'updated_at' => $this->updated_at?->toIso8601String(),
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
             'permissions' => PermissionResource::collection($this->whenLoaded('permissions')),
         ];
     }
