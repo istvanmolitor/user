@@ -6,20 +6,20 @@ use Illuminate\Foundation\Http\FormRequest;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: "UpdateUserRequest",
-    title: "Update User Request",
-    description: "Data for updating a user",
-    required: ["name", "email"],
+    schema: 'UpdateUserRequest',
+    title: 'Update User Request',
+    description: 'Data for updating a user',
+    required: ['name', 'email'],
     properties: [
-        new OA\Property(property: "name", type: "string", example: "Jane Updated"),
-        new OA\Property(property: "email", type: "string", format: "email", example: "jane.updated@example.com"),
-        new OA\Property(property: "email_verified", type: "boolean", example: true),
+        new OA\Property(property: 'name', type: 'string', example: 'Jane Updated'),
+        new OA\Property(property: 'email', type: 'string', format: 'email', example: 'jane.updated@example.com'),
+        new OA\Property(property: 'email_verified', type: 'boolean', example: true),
         new OA\Property(
-            property: "user_groups",
-            type: "array",
-            items: new OA\Items(type: "integer"),
+            property: 'user_groups',
+            type: 'array',
+            items: new OA\Items(type: 'integer'),
             example: [1]
-        )
+        ),
     ]
 )]
 class UpdateUserRequest extends FormRequest
@@ -41,11 +41,10 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $this->route('user')->id,
+            'email' => 'required|email|unique:users,email,'.$this->route('user')->id,
             'user_groups' => 'array',
             'user_groups.*' => 'exists:user_groups,id',
             'email_verified' => 'boolean',
         ];
     }
 }
-

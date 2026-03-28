@@ -4,7 +4,4 @@ namespace Molitor\User\Exceptions;
 
 use Exception;
 
-class PermissionException extends Exception
-{
-
-}
+class PermissionException extends Exception {}

@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Molitor\User\Http\Controllers\AuthController;
 use Molitor\User\Http\Controllers\PermissionController;
 use Molitor\User\Http\Controllers\UserController;
 use Molitor\User\Http\Controllers\UserGroupController;
-use Molitor\User\Http\Controllers\AuthController;
 
 // Authentication routes
 Route::prefix('auth')

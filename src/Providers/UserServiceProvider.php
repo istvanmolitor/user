@@ -4,7 +4,6 @@ namespace Molitor\User\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Molitor\User\Models\User;
 use Molitor\User\Repositories\MembershipRepository;
 use Molitor\User\Repositories\MembershipRepositoryInterface;
 use Molitor\User\Repositories\PermissionRepository;
@@ -21,16 +20,16 @@ class UserServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
-        $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'user');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'user');
 
         // Load API routes with /api prefix
         $this->app->make(\Illuminate\Routing\Router::class)
             ->prefix('api')
-            ->group(__DIR__ . '/../routes/api.php');
+            ->group(__DIR__.'/../routes/api.php');
 
         $this->publishes([
-            __DIR__ . '/../../resources/js/pages/Admin' => resource_path('js/pages/Admin/User'),
+            __DIR__.'/../../resources/js/pages/Admin' => resource_path('js/pages/Admin/User'),
         ], 'admin-pages');
 
         Gate::define(
@@ -38,6 +37,7 @@ class UserServiceProvider extends ServiceProvider
             function ($user, $permission) {
                 /** @var Acl $acl */
                 $acl = app('acl');
+
                 return $acl->hasPermission($permission);
             }
         );
@@ -52,7 +52,7 @@ class UserServiceProvider extends ServiceProvider
         $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
 
         $this->app->singleton('acl', function ($app) {
-            return new Acl();
+            return new Acl;
         });
     }
 }

@@ -15,9 +15,8 @@ class UserGroupRepository implements UserGroupRepositoryInterface
     public function __construct(
         protected MembershipRepositoryInterface $membershipRepository,
         protected UserGroupPermissionRepositoryInterface $userGroupPermissionRepository
-    )
-    {
-        $this->userGroup = new UserGroup();
+    ) {
+        $this->userGroup = new UserGroup;
     }
 
     public function getAll(): Collection

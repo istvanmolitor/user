@@ -14,9 +14,8 @@ class UserRepository implements UserRepositoryInterface
 
     public function __construct(
         protected MembershipRepositoryInterface $membershipRepository
-    )
-    {
-        $this->user = new User();
+    ) {
+        $this->user = new User;
     }
 
     public function getByEmail(string $email): ?User
@@ -32,6 +31,7 @@ class UserRepository implements UserRepositoryInterface
     public function delete(User $user): bool
     {
         $this->membershipRepository->deleteByUser($user);
+
         return $user->delete();
     }
 

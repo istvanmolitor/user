@@ -6,14 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: "LoginRequest",
-    title: "Login Request",
-    description: "Login request data",
-    required: ["email", "password"],
+    schema: 'LoginRequest',
+    title: 'Login Request',
+    description: 'Login request data',
+    required: ['email', 'password'],
     properties: [
-        new OA\Property(property: "email", type: "string", format: "email", example: "admin@example.com", nullable: false),
-        new OA\Property(property: "password", type: "string", format: "password", example: "password", nullable: false),
-        new OA\Property(property: "device_name", type: "string", example: "iPhone 13", nullable: true)
+        new OA\Property(property: 'email', type: 'string', format: 'email', example: 'admin@example.com', nullable: false),
+        new OA\Property(property: 'password', type: 'string', format: 'password', example: 'password', nullable: false),
+        new OA\Property(property: 'device_name', type: 'string', example: 'iPhone 13', nullable: true),
     ]
 )]
 class LoginRequest extends FormRequest

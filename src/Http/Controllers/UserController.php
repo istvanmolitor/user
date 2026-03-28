@@ -1,13 +1,15 @@
 <?php
+
 namespace Molitor\User\Http\Controllers;
-use Illuminate\Http\Request;
+
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Molitor\Admin\Traits\HasAdminFilters;
 use Molitor\User\Http\Requests\StoreUserRequest;
 use Molitor\User\Http\Requests\UpdateUserRequest;
-use Molitor\User\Http\Resources\UserResource;
 use Molitor\User\Http\Resources\UserGroupSimpleResource;
+use Molitor\User\Http\Resources\UserResource;
 use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
 use OpenApi\Attributes as OA;
@@ -17,33 +19,33 @@ class UserController extends Controller
     use HasAdminFilters;
 
     #[OA\Get(
-        path: "/api/admin/users",
-        summary: "List all users",
-        tags: ["Users"],
+        path: '/api/admin/users',
+        summary: 'List all users',
+        tags: ['Users'],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Success",
+                description: 'Success',
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(
-                            property: "data",
-                            type: "array",
-                            items: new OA\Items(ref: "#/components/schemas/User")
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/User')
                         ),
                         new OA\Property(
-                            property: "meta",
-                            type: "object",
+                            property: 'meta',
+                            type: 'object',
                             properties: [
-                                new OA\Property(property: "current_page", type: "integer"),
-                                new OA\Property(property: "last_page", type: "integer"),
-                                new OA\Property(property: "per_page", type: "integer"),
-                                new OA\Property(property: "total", type: "integer")
+                                new OA\Property(property: 'current_page', type: 'integer'),
+                                new OA\Property(property: 'last_page', type: 'integer'),
+                                new OA\Property(property: 'per_page', type: 'integer'),
+                                new OA\Property(property: 'total', type: 'integer'),
                             ]
-                        )
+                        ),
                     ]
                 )
-            )
+            ),
         ]
     )]
     public function index(Request $request): JsonResponse
@@ -66,11 +68,11 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/admin/users/create",
-        summary: "Show form for creating a user",
-        tags: ["Users"],
+        path: '/api/admin/users/create',
+        summary: 'Show form for creating a user',
+        tags: ['Users'],
         responses: [
-            new OA\Response(response: 200, description: "Success")
+            new OA\Response(response: 200, description: 'Success'),
         ]
     )]
     public function create(): JsonResponse
@@ -81,25 +83,25 @@ class UserController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/admin/users",
-        summary: "Store a new user",
-        tags: ["Users"],
+        path: '/api/admin/users',
+        summary: 'Store a new user',
+        tags: ['Users'],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/StoreUserRequest")
+            content: new OA\JsonContent(ref: '#/components/schemas/StoreUserRequest')
         ),
         responses: [
             new OA\Response(
                 response: 201,
-                description: "Created",
+                description: 'Created',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "data", ref: "#/components/schemas/User"),
-                        new OA\Property(property: "message", type: "string")
+                        new OA\Property(property: 'data', ref: '#/components/schemas/User'),
+                        new OA\Property(property: 'message', type: 'string'),
                     ]
                 )
             ),
-            new OA\Response(response: 422, description: "Validation error")
+            new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
     public function store(StoreUserRequest $request): JsonResponse
@@ -125,23 +127,23 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/admin/users/{user}",
-        summary: "Display a specific user",
-        tags: ["Users"],
+        path: '/api/admin/users/{user}',
+        summary: 'Display a specific user',
+        tags: ['Users'],
         parameters: [
-            new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+            new OA\Parameter(name: 'user', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Success",
+                description: 'Success',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "data", ref: "#/components/schemas/User")
+                        new OA\Property(property: 'data', ref: '#/components/schemas/User'),
                     ]
                 )
             ),
-            new OA\Response(response: 404, description: "Not found")
+            new OA\Response(response: 404, description: 'Not found'),
         ]
     )]
     public function show(User $user): JsonResponse
@@ -154,15 +156,15 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/admin/users/{user}/edit",
-        summary: "Show form for editing a user",
-        tags: ["Users"],
+        path: '/api/admin/users/{user}/edit',
+        summary: 'Show form for editing a user',
+        tags: ['Users'],
         parameters: [
-            new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+            new OA\Parameter(name: 'user', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         responses: [
-            new OA\Response(response: 200, description: "Success"),
-            new OA\Response(response: 404, description: "Not found")
+            new OA\Response(response: 200, description: 'Success'),
+            new OA\Response(response: 404, description: 'Not found'),
         ]
     )]
     public function edit(User $user): JsonResponse
@@ -176,29 +178,29 @@ class UserController extends Controller
     }
 
     #[OA\Put(
-        path: "/api/admin/users/{user}",
-        summary: "Update a user",
-        tags: ["Users"],
+        path: '/api/admin/users/{user}',
+        summary: 'Update a user',
+        tags: ['Users'],
         parameters: [
-            new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+            new OA\Parameter(name: 'user', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/UpdateUserRequest")
+            content: new OA\JsonContent(ref: '#/components/schemas/UpdateUserRequest')
         ),
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Success",
+                description: 'Success',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "data", ref: "#/components/schemas/User"),
-                        new OA\Property(property: "message", type: "string")
+                        new OA\Property(property: 'data', ref: '#/components/schemas/User'),
+                        new OA\Property(property: 'message', type: 'string'),
                     ]
                 )
             ),
-            new OA\Response(response: 422, description: "Validation error"),
-            new OA\Response(response: 404, description: "Not found")
+            new OA\Response(response: 422, description: 'Validation error'),
+            new OA\Response(response: 404, description: 'Not found'),
         ]
     )]
     public function update(UpdateUserRequest $request, User $user): JsonResponse
@@ -223,15 +225,15 @@ class UserController extends Controller
     }
 
     #[OA\Delete(
-        path: "/api/admin/users/{user}",
-        summary: "Delete a user",
-        tags: ["Users"],
+        path: '/api/admin/users/{user}',
+        summary: 'Delete a user',
+        tags: ['Users'],
         parameters: [
-            new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+            new OA\Parameter(name: 'user', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         responses: [
-            new OA\Response(response: 200, description: "Success"),
-            new OA\Response(response: 404, description: "Not found")
+            new OA\Response(response: 200, description: 'Success'),
+            new OA\Response(response: 404, description: 'Not found'),
         ]
     )]
     public function destroy(User $user): JsonResponse

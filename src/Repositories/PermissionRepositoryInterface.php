@@ -11,7 +11,7 @@ interface PermissionRepositoryInterface
 {
     public function delete(Permission $permission): void;
 
-    public function getByName(string $name): Permission|null;
+    public function getByName(string $name): ?Permission;
 
     public function create(string $name, string $description): Permission;
 

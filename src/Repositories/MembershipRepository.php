@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Molitor\User\Repositories;
 
+use Molitor\User\Models\Membership;
 use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
-use Molitor\User\Models\Membership;
 
 class MembershipRepository implements MembershipRepositoryInterface
 {
@@ -14,7 +14,7 @@ class MembershipRepository implements MembershipRepositoryInterface
 
     public function __construct()
     {
-        $this->membership = new Membership();
+        $this->membership = new Membership;
     }
 
     public function exists(UserGroup $userGroup, User $user): bool
@@ -40,6 +40,7 @@ class MembershipRepository implements MembershipRepositoryInterface
                     ->delete();
             }
         }
+
         return $this;
     }
 

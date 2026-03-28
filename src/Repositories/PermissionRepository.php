@@ -13,9 +13,8 @@ class PermissionRepository implements PermissionRepositoryInterface
 
     public function __construct(
         protected UserGroupPermissionRepositoryInterface $userGroupPermissionRepository
-    )
-    {
-        $this->permission = new Permission();
+    ) {
+        $this->permission = new Permission;
     }
 
     public function delete(Permission $permission): void
@@ -24,7 +23,7 @@ class PermissionRepository implements PermissionRepositoryInterface
         $permission->delete();
     }
 
-    public function getByName(string $name): Permission|null
+    public function getByName(string $name): ?Permission
     {
         return $this->permission->where('name', $name)->first();
     }
@@ -35,6 +34,7 @@ class PermissionRepository implements PermissionRepositoryInterface
         if ($permission) {
             return $permission;
         }
+
         return $this->permission->create([
             'name' => $name,
             'description' => $description,

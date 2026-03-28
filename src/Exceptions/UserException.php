@@ -4,7 +4,4 @@ namespace Molitor\User\Exceptions;
 
 use Exception;
 
-class UserException extends Exception
-{
-
-}
+class UserException extends Exception {}

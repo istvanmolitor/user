@@ -22,8 +22,7 @@ class AclManagementService
         protected PermissionRepositoryInterface $permissionRepository,
         protected MembershipRepositoryInterface $membershipRepository,
         protected UserGroupPermissionRepositoryInterface $userGroupPermissionRepository
-    ) {
-    }
+    ) {}
 
     /**
      * @throws PermissionException
@@ -31,36 +30,38 @@ class AclManagementService
     public function getPermission(string $name): Permission
     {
         $permission = $this->permissionRepository->getByName($name);
-        if (!$permission) {
+        if (! $permission) {
             throw new PermissionException($name);
         }
+
         return $permission;
     }
 
     public function getUserGroup(string $name): UserGroup
     {
         $userGroup = $this->userGroupRepository->getByName($name);
-        if (!$userGroup) {
+        if (! $userGroup) {
             throw new UserGroupException($name);
         }
+
         return $userGroup;
     }
 
     public function setUserGroupPermission(string|UserGroup $userGroup, string|Permission $permission): self
     {
-        if (!($userGroup instanceof UserGroup)) {
+        if (! ($userGroup instanceof UserGroup)) {
             $userGroup = $this->userGroupRepository->getByName($userGroup);
         }
-        if (!$userGroup) {
+        if (! $userGroup) {
             $userGroup = UserGroup::create([
                 'name' => $userGroup,
                 'description' => $userGroup,
             ]);
         }
 
-        if (!($permission instanceof Permission)) {
+        if (! ($permission instanceof Permission)) {
             $permission = $this->permissionRepository->getByName($permission);
-            if (!$permission) {
+            if (! $permission) {
                 $permission = Permission::create([
                     'name' => $permission,
                     'description' => $permission,
@@ -69,6 +70,7 @@ class AclManagementService
         }
 
         $this->userGroupPermissionRepository->set($userGroup, $permission, true);
+
         return $this;
     }
 
@@ -77,50 +79,53 @@ class AclManagementService
         foreach ($this->userGroupRepository->getDefaults() as $userGroup) {
             $this->membershipRepository->set($userGroup, $user, true);
         }
+
         return $this;
     }
 
-    public function createUser(string $email, string $name, string $password, array $userGroups = null): User
+    public function createUser(string $email, string $name, string $password, ?array $userGroups = null): User
     {
         $user = $this->userRepository->getByEmail($email);
-        if($user) {
-            throw new UserException('User already exists: ' . $email);
+        if ($user) {
+            throw new UserException('User already exists: '.$email);
         }
 
         $user = $this->userRepository->create($name, $email, $password);
-        if($userGroups) {
+        if ($userGroups) {
             foreach ($userGroups as $userGroup) {
                 $this->membershipRepository->set($this->getUserGroup($userGroup), $user, true);
             }
-        }
-        else {
+        } else {
             $this->setDefaultUserGroups($user);
         }
+
         return $user;
     }
 
     public function createPermission(string $name, string $description, array|string $userGroups): Permission
     {
-        if(is_string($userGroups)) {
+        if (is_string($userGroups)) {
             $userGroups = [$userGroups];
         }
 
-        if($this->permissionRepository->exists($name)) {
-            throw new PermissionException('Permission already exists: ' . $name);
+        if ($this->permissionRepository->exists($name)) {
+            throw new PermissionException('Permission already exists: '.$name);
         }
 
         $permission = $this->permissionRepository->create($name, $description);
         foreach ($userGroups as $userGroup) {
             $this->userGroupPermissionRepository->set($this->getUserGroup($userGroup), $permission, true);
         }
+
         return $permission;
     }
 
     public function createUserGroup(string $name, string $description, bool $isDefault = false): UserGroup
     {
-        if($this->userGroupRepository->exists($name)) {
-            throw new UserGroupException('User group already exists: ' . $name);
+        if ($this->userGroupRepository->exists($name)) {
+            throw new UserGroupException('User group already exists: '.$name);
         }
+
         return $this->userGroupRepository->create($name, $description, $isDefault);
     }
 }

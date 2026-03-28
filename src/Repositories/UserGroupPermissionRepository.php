@@ -14,15 +14,15 @@ class UserGroupPermissionRepository implements UserGroupPermissionRepositoryInte
 
     public function __construct()
     {
-        $this->userGroupPermission = new UserGroupPermission();
+        $this->userGroupPermission = new UserGroupPermission;
     }
 
     public function exists(UserGroup $userGroup, Permission $permission): bool
     {
         return $this->userGroupPermission
-                ->where('user_group_id', $userGroup->id)
-                ->where('permission_id', $permission->id)
-                ->count() > 0;
+            ->where('user_group_id', $userGroup->id)
+            ->where('permission_id', $permission->id)
+            ->count() > 0;
     }
 
     public function set(UserGroup $userGroup, Permission $permission, bool $value): self
@@ -40,6 +40,7 @@ class UserGroupPermissionRepository implements UserGroupPermissionRepositoryInte
                     ->delete();
             }
         }
+
         return $this;
     }
 

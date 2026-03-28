@@ -7,17 +7,17 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: "User",
-    title: "User",
-    description: "User information",
+    schema: 'User',
+    title: 'User',
+    description: 'User information',
     properties: [
-        new OA\Property(property: "id", type: "integer", example: 1),
-        new OA\Property(property: "name", type: "string", example: "John Doe"),
-        new OA\Property(property: "email", type: "string", format: "email", example: "john@example.com"),
-        new OA\Property(property: "email_verified_at", type: "string", format: "date-time", nullable: true),
-        new OA\Property(property: "email_verified", type: "boolean", example: true),
-        new OA\Property(property: "created_at", type: "string", format: "date-time"),
-        new OA\Property(property: "updated_at", type: "string", format: "date-time")
+        new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(property: 'name', type: 'string', example: 'John Doe'),
+        new OA\Property(property: 'email', type: 'string', format: 'email', example: 'john@example.com'),
+        new OA\Property(property: 'email_verified_at', type: 'string', format: 'date-time', nullable: true),
+        new OA\Property(property: 'email_verified', type: 'boolean', example: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
     ]
 )]
 class UserResource extends JsonResource
@@ -34,7 +34,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'email_verified_at' => $this->email_verified_at?->toDateTimeString(),
-            'email_verified' => !is_null($this->email_verified_at),
+            'email_verified' => ! is_null($this->email_verified_at),
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),
             'user_groups' => UserGroupResource::collection($this->whenLoaded('userGroups')),

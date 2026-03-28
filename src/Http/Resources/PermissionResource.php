@@ -7,15 +7,15 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: "Permission",
-    title: "Permission",
-    description: "Permission information",
+    schema: 'Permission',
+    title: 'Permission',
+    description: 'Permission information',
     properties: [
-        new OA\Property(property: "id", type: "integer", example: 1),
-        new OA\Property(property: "name", type: "string", example: "user.view"),
-        new OA\Property(property: "description", type: "string", example: "Can view users", nullable: true),
-        new OA\Property(property: "created_at", type: "string", format: "date-time"),
-        new OA\Property(property: "updated_at", type: "string", format: "date-time")
+        new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(property: 'name', type: 'string', example: 'user.view'),
+        new OA\Property(property: 'description', type: 'string', example: 'Can view users', nullable: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
     ]
 )]
 class PermissionResource extends JsonResource

@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Molitor\User\Services;
 
 use Illuminate\Support\Facades\DB;
-use Molitor\User\Models\User;
 
 class Acl
 {
     private bool $loggedIn = false;
-    private int|null $userId = null;
+
+    private ?int $userId = null;
+
     private array $permissions = [];
 
     public function __construct()
@@ -21,7 +22,7 @@ class Acl
     protected function init(): void
     {
         $this->loggedIn = auth()->check();
-        if($this->loggedIn) {
+        if ($this->loggedIn) {
             $this->userId = auth()->id();
             $this->loadPermissions();
         }
@@ -29,7 +30,7 @@ class Acl
 
     protected function loadPermissions(): void
     {
-        $sql = "
+        $sql = '
                 SELECT p.name AS name
                 FROM users u
                 INNER JOIN memberships m ON m.user_id = u.id
@@ -38,7 +39,7 @@ class Acl
                 INNER JOIN permissions p ON ugp.permission_id = p.id
                 WHERE u.id = ?
                 GROUP BY p.name
-            ";
+            ';
 
         $this->permissions = [];
         foreach (DB::select($sql, [$this->userId]) as $row) {
@@ -53,10 +54,9 @@ class Acl
 
     public function hasPermission(string|array $permission): bool
     {
-        if (!$this->loggedIn) {
+        if (! $this->loggedIn) {
             return false;
-        }
-        elseif (is_string($permission)) {
+        } elseif (is_string($permission)) {
             $permissionNames = explode(' ', $permission);
         } elseif (is_array($permission)) {
             $permissionNames = $permission;
@@ -68,6 +68,7 @@ class Acl
                 return true;
             }
         }
+
         return false;
     }
 }

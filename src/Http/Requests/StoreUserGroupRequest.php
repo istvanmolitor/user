@@ -6,20 +6,20 @@ use Illuminate\Foundation\Http\FormRequest;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: "StoreUserGroupRequest",
-    title: "Store User Group Request",
-    description: "Data for creating a user group",
-    required: ["name"],
+    schema: 'StoreUserGroupRequest',
+    title: 'Store User Group Request',
+    description: 'Data for creating a user group',
+    required: ['name'],
     properties: [
-        new OA\Property(property: "name", type: "string", example: "Moderators"),
-        new OA\Property(property: "description", type: "string", example: "Limited access", nullable: true),
-        new OA\Property(property: "is_default", type: "boolean", example: false),
+        new OA\Property(property: 'name', type: 'string', example: 'Moderators'),
+        new OA\Property(property: 'description', type: 'string', example: 'Limited access', nullable: true),
+        new OA\Property(property: 'is_default', type: 'boolean', example: false),
         new OA\Property(
-            property: "permissions",
-            type: "array",
-            items: new OA\Items(type: "integer"),
+            property: 'permissions',
+            type: 'array',
+            items: new OA\Items(type: 'integer'),
             example: [1, 2]
-        )
+        ),
     ]
 )]
 class StoreUserGroupRequest extends FormRequest
@@ -48,4 +48,3 @@ class StoreUserGroupRequest extends FormRequest
         ];
     }
 }
-
