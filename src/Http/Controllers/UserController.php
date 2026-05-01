@@ -5,6 +5,7 @@ namespace Molitor\User\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
 use Molitor\Admin\Traits\HasAdminFilters;
 use Molitor\User\Http\Requests\StoreUserRequest;
 use Molitor\User\Http\Requests\UpdateUserRequest;
@@ -111,7 +112,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => bcrypt(\Illuminate\Support\Str::random(32)),
+            'password' => bcrypt(Str::random(32)),
             'email_verified_at' => $validated['email_verified'] ?? false ? now() : null,
         ]);
         if (isset($validated['user_groups'])) {

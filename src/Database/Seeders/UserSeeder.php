@@ -3,6 +3,9 @@
 namespace Molitor\User\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Molitor\User\Exceptions\PermissionException;
+use Molitor\User\Exceptions\UserException;
+use Molitor\User\Exceptions\UserGroupException;
 use Molitor\User\Services\AclManagementService;
 
 class UserSeeder extends Seeder
@@ -17,13 +20,13 @@ class UserSeeder extends Seeder
         // Create user groups if they don't exist
         try {
             $aclService->createUserGroup('admin', 'Mindenhez van joga.');
-        } catch (\Molitor\User\Exceptions\UserGroupException $e) {
+        } catch (UserGroupException $e) {
             // User group already exists, skip
         }
 
         try {
             $aclService->createUserGroup('user', 'Egyszerű felhasználó', true);
-        } catch (\Molitor\User\Exceptions\UserGroupException $e) {
+        } catch (UserGroupException $e) {
             // User group already exists, skip
         }
 
@@ -31,14 +34,14 @@ class UserSeeder extends Seeder
         try {
             $user = $aclService->createUser('admin@example.com', 'admin', 'admin', ['admin', 'user']);
             $user->markEmailAsVerified();
-        } catch (\Molitor\User\Exceptions\UserException $e) {
+        } catch (UserException $e) {
             // User already exists, skip
         }
 
         // Create permission if it doesn't exist
         try {
             $aclService->createPermission('permission', 'Jogosultságok', 'admin');
-        } catch (\Molitor\User\Exceptions\PermissionException $e) {
+        } catch (PermissionException $e) {
             // Permission already exists, skip
         }
     }

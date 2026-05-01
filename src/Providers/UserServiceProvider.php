@@ -2,6 +2,7 @@
 
 namespace Molitor\User\Providers;
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Molitor\User\Repositories\MembershipRepository;
@@ -24,7 +25,7 @@ class UserServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'user');
 
         // Load API routes with /api prefix
-        $this->app->make(\Illuminate\Routing\Router::class)
+        $this->app->make(Router::class)
             ->prefix('api')
             ->group(__DIR__.'/../routes/api.php');
 
