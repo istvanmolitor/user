@@ -1,6 +1,6 @@
 <?php
 
-namespace Molitor\User\Http\Controllers;
+namespace Molitor\User\Http\Controllers\Api;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
 use OpenApi\Attributes as OA;
 
-class UserController extends Controller
+class UserApiController extends Controller
 {
     use HasAdminFilters;
 
@@ -246,3 +246,4 @@ class UserController extends Controller
         ]);
     }
 }
+

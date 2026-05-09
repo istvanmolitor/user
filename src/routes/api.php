@@ -1,22 +1,22 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Molitor\User\Http\Controllers\AuthController;
-use Molitor\User\Http\Controllers\PermissionController;
-use Molitor\User\Http\Controllers\UserController;
-use Molitor\User\Http\Controllers\UserGroupController;
+use Molitor\User\Http\Controllers\Api\AuthApiController;
+use Molitor\User\Http\Controllers\Api\PermissionApiController;
+use Molitor\User\Http\Controllers\Api\UserApiController;
+use Molitor\User\Http\Controllers\Api\UserGroupApiController;
 
 // Authentication routes
 Route::prefix('auth')
     ->middleware(['api'])
     ->name('user.auth.')
     ->group(function () {
-        Route::post('login', [AuthController::class, 'login'])->name('login');
+        Route::post('login', [AuthApiController::class, 'login'])->name('login');
 
         Route::middleware('auth:sanctum')->group(function () {
-            Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-            Route::get('me', [AuthController::class, 'me'])->name('me');
-            Route::post('change-password', [AuthController::class, 'changePassword'])->name('change-password');
+            Route::post('logout', [AuthApiController::class, 'logout'])->name('logout');
+            Route::get('me', [AuthApiController::class, 'me'])->name('me');
+            Route::post('change-password', [AuthApiController::class, 'changePassword'])->name('change-password');
         });
     });
 
@@ -26,11 +26,11 @@ Route::prefix('admin/user')
     ->name('user.')
     ->group(function () {
         // Users
-        Route::resource('users', UserController::class);
+        Route::resource('users', UserApiController::class);
 
         // User Groups
-        Route::resource('user-groups', UserGroupController::class);
+        Route::resource('user-groups', UserGroupApiController::class);
 
         // Permissions
-        Route::resource('permissions', PermissionController::class);
+        Route::resource('permissions', PermissionApiController::class);
     });

@@ -5,4 +5,8 @@ return [
     'throttle' => 'Túl sok bejelentkezési kísérlet. Kérjük, próbálja újra :seconds másodperc múlva.',
     'logged_out' => 'Sikeresen kijelentkezve.',
     'logged_in' => 'Sikeresen bejelentkezve.',
+    'login_title' => 'Bejelentkezés',
+    'email' => 'E-mail cím',
+    'password' => 'Jelszó',
+    'login_button' => 'Bejelentkezés',
 ];
