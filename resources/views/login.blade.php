@@ -1,4 +1,4 @@
-@extends('user::layouts.guest')
+@extends(config('user.layouts.guest'))
 
 @section('title', __('user::auth.login_title') ?? 'Bejelentkezés')
 
