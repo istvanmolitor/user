@@ -24,7 +24,7 @@
 
         <div class="flex items-center justify-between flex-col gap-4">
             <x-theme::submit-button>
-                {{ __('user::auth.login_button') ?? 'Bejelentkezés' }}
+                {{ __('user::auth.login_button') }}
             </x-theme::submit-button>
 
             <div class="flex flex-col items-center gap-2">
