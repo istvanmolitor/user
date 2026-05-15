@@ -18,6 +18,7 @@
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
+
         <x-theme::email-field id="email" :label="__('user::auth.email') ?? 'E-mail cím'" :value="old('email')" required autofocus />
 
         <x-theme::password-field id="password" :label="__('user::auth.password') ?? 'Jelszó'" required />
