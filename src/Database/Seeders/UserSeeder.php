@@ -42,7 +42,7 @@ class UserSeeder extends Seeder
         try {
             $aclService->createPermission('permission', 'Jogosultságok', 'admin');
         } catch (PermissionException $e) {
-            // Permission already exists, skip
+            $this->command->error('Permission "permission" already exists, skipping creation.');
         }
     }
 }
