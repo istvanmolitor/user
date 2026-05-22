@@ -26,6 +26,7 @@ Route::prefix('admin/user')
     ->name('user.')
     ->group(function () {
         // Users
+        Route::get('users/select', [UserApiController::class, 'select'])->name('users.select');
         Route::resource('users', UserApiController::class);
 
         // User Groups

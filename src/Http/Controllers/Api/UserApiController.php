@@ -69,6 +69,73 @@ class UserApiController extends Controller
     }
 
     #[OA\Get(
+        path: '/api/admin/user/users/select',
+        summary: 'Search users for select inputs',
+        tags: ['Users'],
+        parameters: [
+            new OA\Parameter(name: 'search', in: 'query', required: false, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'per_page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 20)),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/User')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer'),
+                                new OA\Property(property: 'last_page', type: 'integer'),
+                                new OA\Property(property: 'per_page', type: 'integer'),
+                                new OA\Property(property: 'total', type: 'integer'),
+                            ]
+                        ),
+                    ]
+                )
+            ),
+        ]
+    )]
+    public function select(Request $request): JsonResponse
+    {
+        $search = trim((string) $request->input('search', ''));
+        $perPage = max(1, min(50, (int) $request->input('per_page', 20)));
+
+        $query = User::query();
+
+        if ($search !== '') {
+            $query->where(function ($query) use ($search): void {
+                $query->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('email', 'like', '%'.$search.'%');
+            });
+        }
+
+        $users = $query
+            ->orderBy('name')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return response()->json([
+            'data' => UserResource::collection($users->items()),
+            'meta' => [
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
+                'per_page' => $users->perPage(),
+                'total' => $users->total(),
+            ],
+            'filters' => [
+                'search' => $search,
+            ],
+        ]);
+    }
+
+    #[OA\Get(
         path: '/api/admin/users/create',
         summary: 'Show form for creating a user',
         tags: ['Users'],
