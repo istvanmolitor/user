@@ -30,6 +30,9 @@ Route::prefix('admin/user')
         Route::resource('users', UserApiController::class);
 
         // User Groups
+        Route::get('user-groups/{user_group}/users', [UserGroupApiController::class, 'users'])->name('user-groups.users');
+        Route::post('user-groups/{user_group}/users', [UserGroupApiController::class, 'attachUser'])->name('user-groups.users.attach');
+        Route::delete('user-groups/{user_group}/users/{user}', [UserGroupApiController::class, 'detachUser'])->name('user-groups.users.detach');
         Route::resource('user-groups', UserGroupApiController::class);
 
         // Permissions

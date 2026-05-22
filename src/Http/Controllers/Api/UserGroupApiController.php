@@ -6,11 +6,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Molitor\Admin\Traits\HasAdminFilters;
+use Molitor\User\Http\Requests\AttachUserToUserGroupRequest;
 use Molitor\User\Http\Requests\StoreUserGroupRequest;
 use Molitor\User\Http\Requests\UpdateUserGroupRequest;
 use Molitor\User\Http\Resources\PermissionSimpleResource;
+use Molitor\User\Http\Resources\UserResource;
 use Molitor\User\Http\Resources\UserGroupResource;
 use Molitor\User\Models\Permission;
+use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
 use OpenApi\Attributes as OA;
 
@@ -153,6 +156,48 @@ class UserGroupApiController extends Controller
         return response()->json([
             'data' => new UserGroupResource($userGroup),
             'permissions' => PermissionSimpleResource::collection(Permission::all()),
+        ]);
+    }
+
+    public function users(Request $request, UserGroup $userGroup): JsonResponse
+    {
+        $query = User::query()
+            ->whereHas('userGroups', function ($query) use ($userGroup): void {
+                $query->whereKey($userGroup->getKey());
+            });
+
+        $users = $this->applyAdminFilters($query, $request, ['name', 'email'])
+            ->paginate(10)
+            ->withQueryString();
+
+        return response()->json([
+            'data' => UserResource::collection($users->items()),
+            'meta' => [
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
+                'per_page' => $users->perPage(),
+                'total' => $users->total(),
+            ],
+            'filters' => $request->only(['search', 'sort', 'direction']),
+        ]);
+    }
+
+    public function attachUser(AttachUserToUserGroupRequest $request, UserGroup $userGroup): JsonResponse
+    {
+        $validated = $request->validated();
+        $userGroup->users()->syncWithoutDetaching([$validated['user_id']]);
+
+        return response()->json([
+            'message' => __('user::user-group.messages.updated'),
+        ]);
+    }
+
+    public function detachUser(UserGroup $userGroup, User $user): JsonResponse
+    {
+        $userGroup->users()->detach($user->id);
+
+        return response()->json([
+            'message' => __('user::user-group.messages.updated'),
         ]);
     }
 
