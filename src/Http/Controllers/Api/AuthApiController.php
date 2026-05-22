@@ -164,4 +164,3 @@ class AuthApiController extends Controller
         ]);
     }
 }
-

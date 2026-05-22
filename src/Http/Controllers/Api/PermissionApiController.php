@@ -242,4 +242,3 @@ class PermissionApiController extends Controller
         ]);
     }
 }
-

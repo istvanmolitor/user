@@ -24,4 +24,3 @@ class AttachUserToUserGroupRequest extends FormRequest
         ];
     }
 }
-

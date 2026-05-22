@@ -10,8 +10,8 @@ use Molitor\User\Http\Requests\AttachUserToUserGroupRequest;
 use Molitor\User\Http\Requests\StoreUserGroupRequest;
 use Molitor\User\Http\Requests\UpdateUserGroupRequest;
 use Molitor\User\Http\Resources\PermissionSimpleResource;
-use Molitor\User\Http\Resources\UserResource;
 use Molitor\User\Http\Resources\UserGroupResource;
+use Molitor\User\Http\Resources\UserResource;
 use Molitor\User\Models\Permission;
 use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
@@ -292,4 +292,3 @@ class UserGroupApiController extends Controller
         ]);
     }
 }
-
