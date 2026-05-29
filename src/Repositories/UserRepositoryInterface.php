@@ -15,5 +15,5 @@ interface UserRepositoryInterface
 
     public function delete(User $user): bool;
 
-    public function create(string $name, string $email, string $password): User;
+    public function create(string $name, string $email, string $password, bool $emailVerified = false): User;
 }

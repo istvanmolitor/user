@@ -15,11 +15,16 @@ use Molitor\User\Http\Resources\UserResource;
 use Molitor\User\Models\Permission;
 use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
+use Molitor\User\Repositories\UserGroupRepositoryInterface;
 use OpenApi\Attributes as OA;
 
 class UserGroupApiController extends Controller
 {
     use HasAdminFilters;
+
+    public function __construct(
+        private UserGroupRepositoryInterface $userGroupRepository
+    ) {}
 
     #[OA\Get(
         path: '/api/admin/user-groups',
@@ -111,11 +116,11 @@ class UserGroupApiController extends Controller
     {
         $validated = $request->validated();
 
-        $userGroup = UserGroup::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'is_default' => $validated['is_default'] ?? false,
-        ]);
+        $userGroup = $this->userGroupRepository->create(
+            $validated['name'],
+            $validated['description'] ?? '',
+            $validated['is_default'] ?? false,
+        );
 
         if (isset($validated['permissions'])) {
             $userGroup->permissions()->sync($validated['permissions']);

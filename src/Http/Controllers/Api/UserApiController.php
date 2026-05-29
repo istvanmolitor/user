@@ -11,13 +11,17 @@ use Molitor\User\Http\Requests\StoreUserRequest;
 use Molitor\User\Http\Requests\UpdateUserRequest;
 use Molitor\User\Http\Resources\UserGroupSimpleResource;
 use Molitor\User\Http\Resources\UserResource;
-use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
+use Molitor\User\Repositories\UserRepositoryInterface;
 use OpenApi\Attributes as OA;
 
 class UserApiController extends Controller
 {
     use HasAdminFilters;
+
+    public function __construct(
+        private UserRepositoryInterface $userRepository
+    ) {}
 
     #[OA\Get(
         path: '/api/admin/users',
@@ -176,12 +180,13 @@ class UserApiController extends Controller
     {
         $validated = $request->validated();
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => bcrypt(Str::random(32)),
-            'email_verified_at' => $validated['email_verified'] ?? false ? now() : null,
-        ]);
+        $user = $this->userRepository->create(
+            $validated['name'],
+            $validated['email'],
+            Str::random(32),
+            (bool) ($validated['email_verified'] ?? false),
+        );
+
         if (isset($validated['user_groups'])) {
             $user->userGroups()->sync($validated['user_groups']);
         }

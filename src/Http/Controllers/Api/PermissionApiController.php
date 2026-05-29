@@ -12,11 +12,16 @@ use Molitor\User\Http\Resources\PermissionResource;
 use Molitor\User\Http\Resources\UserGroupSimpleResource;
 use Molitor\User\Models\Permission;
 use Molitor\User\Models\UserGroup;
+use Molitor\User\Repositories\PermissionRepositoryInterface;
 use OpenApi\Attributes as OA;
 
 class PermissionApiController extends Controller
 {
     use HasAdminFilters;
+
+    public function __construct(
+        private PermissionRepositoryInterface $permissionRepository
+    ) {}
 
     #[OA\Get(
         path: '/api/admin/permissions',
@@ -108,10 +113,10 @@ class PermissionApiController extends Controller
     {
         $validated = $request->validated();
 
-        $permission = Permission::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-        ]);
+        $permission = $this->permissionRepository->create(
+            $validated['name'],
+            $validated['description'] ?? '',
+        );
 
         if (isset($validated['user_groups'])) {
             $permission->userGroups()->sync($validated['user_groups']);

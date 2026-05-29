@@ -35,14 +35,13 @@ class UserRepository implements UserRepositoryInterface
         return $user->delete();
     }
 
-    public function create(string $name, string $email, string $password): User
+    public function create(string $name, string $email, string $password, bool $emailVerified = false): User
     {
-        return $this->user->create(
-            [
-                'name' => $name,
-                'email' => $email,
-                'password' => Hash::make($password),
-            ]
-        );
+        return $this->user->create([
+            'name' => $name,
+            'email' => $email,
+            'password' => Hash::make($password),
+            'email_verified_at' => $emailVerified ? now() : null,
+        ]);
     }
 }
