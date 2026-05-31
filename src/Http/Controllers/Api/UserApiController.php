@@ -11,6 +11,7 @@ use Molitor\User\Http\Requests\StoreUserRequest;
 use Molitor\User\Http\Requests\UpdateUserRequest;
 use Molitor\User\Http\Resources\UserGroupSimpleResource;
 use Molitor\User\Http\Resources\UserResource;
+use Molitor\User\Models\User;
 use Molitor\User\Models\UserGroup;
 use Molitor\User\Repositories\UserRepositoryInterface;
 use OpenApi\Attributes as OA;
