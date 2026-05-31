@@ -5,6 +5,7 @@ namespace Molitor\User\Providers;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Molitor\User\Http\Middleware\PermissionMiddleware;
 use Molitor\User\Repositories\MembershipRepository;
 use Molitor\User\Repositories\MembershipRepositoryInterface;
 use Molitor\User\Repositories\PermissionRepository;
@@ -21,6 +22,8 @@ class UserServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        $this->app->make(Router::class)->aliasMiddleware('permission', PermissionMiddleware::class);
+
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'user');
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'user');

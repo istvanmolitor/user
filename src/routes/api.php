@@ -22,7 +22,7 @@ Route::prefix('auth')
 
 // Admin routes
 Route::prefix('admin/user')
-    ->middleware(['api', 'auth:sanctum'])
+    ->middleware(['api', 'auth:sanctum', 'permission:permission'])
     ->name('user.')
     ->group(function () {
         // Users
