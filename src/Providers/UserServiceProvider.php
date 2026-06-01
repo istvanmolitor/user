@@ -10,6 +10,8 @@ use Molitor\User\Repositories\MembershipRepository;
 use Molitor\User\Repositories\MembershipRepositoryInterface;
 use Molitor\User\Repositories\PermissionRepository;
 use Molitor\User\Repositories\PermissionRepositoryInterface;
+use Molitor\User\Repositories\PermissionGroupRepository;
+use Molitor\User\Repositories\PermissionGroupRepositoryInterface;
 use Molitor\User\Repositories\UserGroupPermissionRepository;
 use Molitor\User\Repositories\UserGroupPermissionRepositoryInterface;
 use Molitor\User\Repositories\UserGroupRepository;
@@ -63,6 +65,7 @@ class UserServiceProvider extends ServiceProvider
         $this->app->bind(UserGroupRepositoryInterface::class, UserGroupRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
+        $this->app->bind(PermissionGroupRepositoryInterface::class, PermissionGroupRepository::class);
 
         $this->app->singleton('acl', function ($app) {
             return new Acl;

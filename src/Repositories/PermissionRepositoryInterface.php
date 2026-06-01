@@ -6,6 +6,7 @@ namespace Molitor\User\Repositories;
 
 use Illuminate\Database\Eloquent\Collection;
 use Molitor\User\Models\Permission;
+use Molitor\User\Models\PermissionGroup;
 
 interface PermissionRepositoryInterface
 {
@@ -13,7 +14,7 @@ interface PermissionRepositoryInterface
 
     public function getByName(string $name): ?Permission;
 
-    public function create(string $name, string $description): Permission;
+    public function create(PermissionGroup $permissionGroup, string $name, string $description): Permission;
 
     public function getAll(): Collection;
 

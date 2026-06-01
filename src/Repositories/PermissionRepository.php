@@ -6,6 +6,7 @@ namespace Molitor\User\Repositories;
 
 use Illuminate\Database\Eloquent\Collection;
 use Molitor\User\Models\Permission;
+use Molitor\User\Models\PermissionGroup;
 
 class PermissionRepository implements PermissionRepositoryInterface
 {
@@ -28,7 +29,7 @@ class PermissionRepository implements PermissionRepositoryInterface
         return $this->permission->where('name', $name)->first();
     }
 
-    public function create(string $name, string $description): Permission
+    public function create(PermissionGroup $permissionGroup, string $name, string $description): Permission
     {
         $permission = $this->getByName($name);
         if ($permission) {
@@ -36,6 +37,7 @@ class PermissionRepository implements PermissionRepositoryInterface
         }
 
         return $this->permission->create([
+            'permission_group_id' => $permissionGroup->id,
             'name' => $name,
             'description' => $description,
         ]);

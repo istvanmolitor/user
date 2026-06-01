@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Permission extends Model
 {
     protected $fillable = [
+        'permission_group_id',
         'name',
         'description',
     ];
@@ -19,5 +20,10 @@ class Permission extends Model
     public function userGroups(): BelongsToMany
     {
         return $this->belongsToMany(UserGroup::class, 'user_group_permissions', 'permission_id', 'user_group_id', 'id');
+    }
+
+    public function permissionGroup(): BelongsTo
+    {
+        return $this->belongsTo(PermissionGroup::class, 'permission_group_id');
     }
 }

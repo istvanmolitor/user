@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $aclService = app(AclManagementService::class);
-
+        
         // Create user groups if they don't exist
         try {
             $aclService->createUserGroup('admin', 'Mindenhez van joga.');
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
 
         // Create permission if it doesn't exist
         try {
-            $aclService->createPermission('permission', 'Jogosultságok', 'admin');
+            $aclService->createPermission('permission', 'Jogosultságok', 'admin', 'Felhasználó');
         } catch (PermissionException $e) {
             $this->command->error('Permission "permission" already exists, skipping creation.');
         }
