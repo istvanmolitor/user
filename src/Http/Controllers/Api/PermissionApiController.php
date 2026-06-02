@@ -57,19 +57,25 @@ class PermissionApiController extends Controller
     public function index(Request $request): JsonResponse
     {
         $query = Permission::with(['userGroups', 'permissionGroup']);
+
+        if ($request->filled('permission_group_id')) {
+            $query->where('permission_group_id', (int) $request->integer('permission_group_id'));
+        }
+
         $permissions = $this->applyAdminFilters($query, $request, ['name', 'description'])
             ->paginate(10)
             ->withQueryString();
 
         return response()->json([
             'data' => PermissionResource::collection($permissions->items()),
+            'permission_groups' => PermissionGroup::query()->orderBy('name')->get(['id', 'name']),
             'meta' => [
                 'current_page' => $permissions->currentPage(),
                 'last_page' => $permissions->lastPage(),
                 'per_page' => $permissions->perPage(),
                 'total' => $permissions->total(),
             ],
-            'filters' => $request->only(['search', 'sort', 'direction']),
+            'filters' => $request->only(['search', 'sort', 'direction', 'permission_group_id']),
         ]);
     }
 
