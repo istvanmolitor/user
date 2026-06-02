@@ -38,9 +38,12 @@ class UserSeeder extends Seeder
             // User already exists, skip
         }
 
+        $permissionGroupName = "Felhasználó";
+
         // Create permission if it doesn't exist
         try {
-            $aclService->createPermission('permission', 'Jogosultságok', 'admin', 'Felhasználó');
+            $aclService->createPermission('user_create', 'Felhasználó létrehozása', 'admin', $permissionGroupName);
+            $aclService->createPermission('permission', 'Jogosultságok', 'admin', $permissionGroupName);
         } catch (PermissionException $e) {
             $this->command->error('Permission "permission" already exists, skipping creation.');
         }

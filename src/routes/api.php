@@ -28,7 +28,13 @@ Route::prefix('admin/user')
     ->group(function () {
         // Users
         Route::get('users/select', [UserApiController::class, 'select'])->name('users.select');
-        Route::resource('users', UserApiController::class);
+        Route::get('users/create', [UserApiController::class, 'create'])
+            ->middleware('permission:user_create')
+            ->name('users.create');
+        Route::post('users', [UserApiController::class, 'store'])
+            ->middleware('permission:user_create')
+            ->name('users.store');
+        Route::resource('users', UserApiController::class)->except(['create', 'store']);
 
         // User Groups
         Route::get('user-groups/{user_group}/users', [UserGroupApiController::class, 'users'])->name('user-groups.users');
