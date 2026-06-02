@@ -10,8 +10,9 @@ use OpenApi\Attributes as OA;
     schema: 'StorePermissionRequest',
     title: 'Store Permission Request',
     description: 'Data for creating a permission',
-    required: ['name'],
+    required: ['permission_group_id', 'name'],
     properties: [
+        new OA\Property(property: 'permission_group_id', type: 'integer', example: 1),
         new OA\Property(property: 'name', type: 'string', example: 'user.delete'),
         new OA\Property(property: 'description', type: 'string', example: 'Can delete users', nullable: true),
         new OA\Property(
@@ -40,6 +41,7 @@ class StorePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'permission_group_id' => 'required|exists:permission_groups,id',
             'name' => 'required|string|max:255|unique:permissions,name',
             'description' => 'nullable|string',
             'user_groups' => 'nullable|array',

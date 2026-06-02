@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Molitor\User\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Permission extends Model

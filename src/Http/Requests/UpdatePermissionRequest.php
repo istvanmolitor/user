@@ -10,8 +10,9 @@ use OpenApi\Attributes as OA;
     schema: 'UpdatePermissionRequest',
     title: 'Update Permission Request',
     description: 'Data for updating a permission',
-    required: ['name'],
+    required: ['permission_group_id', 'name'],
     properties: [
+        new OA\Property(property: 'permission_group_id', type: 'integer', example: 1),
         new OA\Property(property: 'name', type: 'string', example: 'user.delete.updated'),
         new OA\Property(property: 'description', type: 'string', example: 'Can delete users (updated)', nullable: true),
         new OA\Property(
@@ -40,6 +41,7 @@ class UpdatePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'permission_group_id' => 'required|exists:permission_groups,id',
             'name' => 'required|string|max:255|unique:permissions,name,'.$this->route('permission')->id,
             'description' => 'nullable|string',
             'user_groups' => 'nullable|array',

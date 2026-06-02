@@ -31,6 +31,10 @@ class PermissionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'permission_group' => $this->whenLoaded('permissionGroup', fn () => [
+                'id' => $this->permissionGroup?->id,
+                'name' => $this->permissionGroup?->name,
+            ]),
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),
             'user_groups' => UserGroupResource::collection($this->whenLoaded('userGroups')),

@@ -11,6 +11,7 @@ use Molitor\User\Http\Requests\UpdatePermissionRequest;
 use Molitor\User\Http\Resources\PermissionResource;
 use Molitor\User\Http\Resources\UserGroupSimpleResource;
 use Molitor\User\Models\Permission;
+use Molitor\User\Models\PermissionGroup;
 use Molitor\User\Models\UserGroup;
 use Molitor\User\Repositories\PermissionRepositoryInterface;
 use OpenApi\Attributes as OA;
@@ -55,7 +56,7 @@ class PermissionApiController extends Controller
     )]
     public function index(Request $request): JsonResponse
     {
-        $query = Permission::with('userGroups');
+        $query = Permission::with(['userGroups', 'permissionGroup']);
         $permissions = $this->applyAdminFilters($query, $request, ['name', 'description'])
             ->paginate(10)
             ->withQueryString();
@@ -83,6 +84,7 @@ class PermissionApiController extends Controller
     public function create(): JsonResponse
     {
         return response()->json([
+            'permission_groups' => PermissionGroup::query()->orderBy('name')->get(['id', 'name']),
             'user_groups' => UserGroupSimpleResource::collection(UserGroup::all()),
         ]);
     }
@@ -112,8 +114,10 @@ class PermissionApiController extends Controller
     public function store(StorePermissionRequest $request): JsonResponse
     {
         $validated = $request->validated();
+        $permissionGroup = PermissionGroup::query()->findOrFail($validated['permission_group_id']);
 
         $permission = $this->permissionRepository->create(
+            $permissionGroup,
             $validated['name'],
             $validated['description'] ?? '',
         );
@@ -121,6 +125,8 @@ class PermissionApiController extends Controller
         if (isset($validated['user_groups'])) {
             $permission->userGroups()->sync($validated['user_groups']);
         }
+
+        $permission->load(['userGroups', 'permissionGroup']);
 
         return response()->json([
             'data' => new PermissionResource($permission),
@@ -150,7 +156,7 @@ class PermissionApiController extends Controller
     )]
     public function show(Permission $permission): JsonResponse
     {
-        $permission->load('userGroups');
+        $permission->load(['userGroups', 'permissionGroup']);
 
         return response()->json([
             'data' => new PermissionResource($permission),
@@ -171,10 +177,11 @@ class PermissionApiController extends Controller
     )]
     public function edit(Permission $permission): JsonResponse
     {
-        $permission->load('userGroups');
+        $permission->load(['userGroups', 'permissionGroup']);
 
         return response()->json([
             'data' => new PermissionResource($permission),
+            'permission_groups' => PermissionGroup::query()->orderBy('name')->get(['id', 'name']),
             'user_groups' => UserGroupSimpleResource::collection(UserGroup::all()),
         ]);
     }
@@ -210,6 +217,7 @@ class PermissionApiController extends Controller
         $validated = $request->validated();
 
         $permission->update([
+            'permission_group_id' => $validated['permission_group_id'],
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
         ]);
@@ -218,7 +226,7 @@ class PermissionApiController extends Controller
             $permission->userGroups()->sync($validated['user_groups']);
         }
 
-        $permission->load('userGroups');
+        $permission->load(['userGroups', 'permissionGroup']);
 
         return response()->json([
             'data' => new PermissionResource($permission),
