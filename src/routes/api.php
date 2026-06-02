@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Molitor\User\Http\Controllers\Api\AuthApiController;
 use Molitor\User\Http\Controllers\Api\PermissionApiController;
+use Molitor\User\Http\Controllers\Api\PermissionGroupApiController;
 use Molitor\User\Http\Controllers\Api\UserApiController;
 use Molitor\User\Http\Controllers\Api\UserGroupApiController;
 
@@ -37,4 +38,7 @@ Route::prefix('admin/user')
 
         // Permissions
         Route::resource('permissions', PermissionApiController::class);
+
+        // Permission Groups
+        Route::resource('permission-groups', PermissionGroupApiController::class);
     });
