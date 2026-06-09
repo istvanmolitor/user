@@ -18,7 +18,7 @@ class CreatePermissionsTable extends Migration
 
             $table->unsignedBigInteger('permission_group_id');
             $table->foreign('permission_group_id')->references('id')->on('permission_groups');
-
+            
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
