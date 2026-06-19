@@ -28,7 +28,6 @@ class UserServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'user');
-        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'user');
         $this->publishes([
             __DIR__.'/../../config/user.php' => config_path('user.php'),
         ], 'user-config');
@@ -36,10 +35,6 @@ class UserServiceProvider extends ServiceProvider
         // Load API routes with /api prefix
         $this->app->make(Router::class)
             ->group(['prefix' => 'api'], __DIR__.'/../routes/api.php');
-
-        // Load Web routes
-        $this->app->make(Router::class)
-            ->group([], __DIR__.'/../routes/web.php');
 
         $this->publishes([
             __DIR__.'/../../resources/js/pages/Admin' => resource_path('js/pages/Admin/User'),
