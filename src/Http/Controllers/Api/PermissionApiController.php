@@ -3,9 +3,9 @@
 namespace Molitor\User\Http\Controllers\Api;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
-use Molitor\Admin\Traits\HasAdminFilters;
+use Molitor\User\DataTables\PermissionDataTable;
 use Molitor\User\Http\Requests\StorePermissionRequest;
 use Molitor\User\Http\Requests\UpdatePermissionRequest;
 use Molitor\User\Http\Resources\PermissionResource;
@@ -18,8 +18,6 @@ use OpenApi\Attributes as OA;
 
 class PermissionApiController extends Controller
 {
-    use HasAdminFilters;
-
     public function __construct(
         private PermissionRepositoryInterface $permissionRepository
     ) {}
@@ -54,29 +52,9 @@ class PermissionApiController extends Controller
             ),
         ]
     )]
-    public function index(Request $request): JsonResponse
+    public function index(PermissionDataTable $dataTable): AnonymousResourceCollection
     {
-        $query = Permission::with(['userGroups', 'permissionGroup']);
-
-        if ($request->filled('permission_group_id')) {
-            $query->where('permission_group_id', (int) $request->integer('permission_group_id'));
-        }
-
-        $permissions = $this->applyAdminFilters($query, $request, ['name', 'description'])
-            ->paginate(10)
-            ->withQueryString();
-
-        return response()->json([
-            'data' => PermissionResource::collection($permissions->items()),
-            'permission_groups' => PermissionGroup::query()->orderBy('name')->get(['id', 'name']),
-            'meta' => [
-                'current_page' => $permissions->currentPage(),
-                'last_page' => $permissions->lastPage(),
-                'per_page' => $permissions->perPage(),
-                'total' => $permissions->total(),
-            ],
-            'filters' => $request->only(['search', 'sort', 'direction', 'permission_group_id']),
-        ]);
+        return $dataTable->getResponse();
     }
 
     #[OA\Get(

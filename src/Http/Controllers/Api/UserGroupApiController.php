@@ -4,8 +4,10 @@ namespace Molitor\User\Http\Controllers\Api;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
 use Molitor\Admin\Traits\HasAdminFilters;
+use Molitor\User\DataTables\UserGroupDataTable;
 use Molitor\User\Http\Requests\AttachUserToUserGroupRequest;
 use Molitor\User\Http\Requests\StoreUserGroupRequest;
 use Molitor\User\Http\Requests\UpdateUserGroupRequest;
@@ -56,23 +58,9 @@ class UserGroupApiController extends Controller
             ),
         ]
     )]
-    public function index(Request $request): JsonResponse
+    public function index(UserGroupDataTable $dataTable): AnonymousResourceCollection
     {
-        $query = UserGroup::with('permissions');
-        $userGroups = $this->applyAdminFilters($query, $request, ['name', 'description'])
-            ->paginate(10)
-            ->withQueryString();
-
-        return response()->json([
-            'data' => UserGroupResource::collection($userGroups->items()),
-            'meta' => [
-                'current_page' => $userGroups->currentPage(),
-                'last_page' => $userGroups->lastPage(),
-                'per_page' => $userGroups->perPage(),
-                'total' => $userGroups->total(),
-            ],
-            'filters' => $request->only(['search', 'sort', 'direction']),
-        ]);
+        return $dataTable->getResponse();
     }
 
     #[OA\Get(
