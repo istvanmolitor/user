@@ -29,6 +29,7 @@ class PermissionGroupDataTable extends DataTable
     protected function initColumns(): void
     {
         $this->addColumn('name')->setSearchable()->setOrderable();
+        $this->addColumn('permissions_count')->setLabel('Jogosultságok száma');
     }
 
     public function query(Builder $query): Builder

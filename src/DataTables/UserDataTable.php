@@ -30,6 +30,7 @@ class UserDataTable extends DataTable
     {
         $this->addColumn('name')->setSearchable()->setOrderable();
         $this->addColumn('email')->setSearchable()->setOrderable();
+        $this->addColumn('email_verified')->setLabel('Hitelesített');
     }
 
     public function query(Builder $query): Builder

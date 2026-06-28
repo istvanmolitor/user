@@ -28,6 +28,8 @@ class PermissionDataTable extends DataTable
     {
         $this->addColumn('name')->setSearchable()->setOrderable();
         $this->addColumn('description')->setSearchable();
+        $this->addColumn('permission_group')->setLabel('Csoport');
+        $this->addColumn('user_groups')->setLabel('Felhasználói csoportok');
     }
 
     public function query(Builder $query): Builder
