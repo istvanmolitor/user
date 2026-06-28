@@ -21,6 +21,11 @@ class UserDataTable extends DataTable
         return UserResource::class;
     }
 
+    protected function getSearchPlaceholder(): string
+    {
+        return 'Keresés név vagy email alapján...';
+    }
+
     protected function initColumns(): void
     {
         $this->addColumn('name')->setSearchable()->setOrderable();
