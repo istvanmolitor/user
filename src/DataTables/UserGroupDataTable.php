@@ -27,8 +27,8 @@ class UserGroupDataTable extends DataTable
         $this->addColumn('description')->setSearchable();
     }
 
-    protected function getBaseQuery(): Builder
+    public function query(Builder $query): Builder
     {
-        return UserGroup::query()->with('permissions');
+        return $query->with('permissions');
     }
 }

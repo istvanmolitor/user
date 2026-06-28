@@ -27,8 +27,8 @@ class UserDataTable extends DataTable
         $this->addColumn('email')->setSearchable()->setOrderable();
     }
 
-    protected function getBaseQuery(): Builder
+    public function query(Builder $query): Builder
     {
-        return User::query()->with('userGroups');
+        return $query->with('userGroups');
     }
 }

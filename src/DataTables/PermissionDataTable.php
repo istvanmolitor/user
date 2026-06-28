@@ -30,9 +30,9 @@ class PermissionDataTable extends DataTable
         $this->addColumn('description')->setSearchable();
     }
 
-    protected function getBaseQuery(): Builder
+    public function query(Builder $query): Builder
     {
-        return Permission::query()->with(['userGroups', 'permissionGroup']);
+        return $query->with(['userGroups', 'permissionGroup']);
     }
 
     protected function applyFilters(Builder $query): Builder

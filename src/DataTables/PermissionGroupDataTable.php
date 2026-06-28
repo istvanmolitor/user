@@ -26,8 +26,8 @@ class PermissionGroupDataTable extends DataTable
         $this->addColumn('name')->setSearchable()->setOrderable();
     }
 
-    protected function getBaseQuery(): Builder
+    public function query(Builder $query): Builder
     {
-        return PermissionGroup::query()->withCount('permissions');
+        return $query->withCount('permissions');
     }
 }
