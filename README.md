@@ -209,19 +209,24 @@ Ez automatikusan hozzáadja a felhasználók, csoportok és jogosultságok menü
 
 ### Seeder regisztrálása
 
-A jogosultságok és csoportok kezdeti beállításához regisztráld a seedert a `DatabaseSeeder.php` fájlban:
+**Ez kötelező lépés.** A `UserSeeder` hozza létre az alapértelmezett felhasználói csoportokat (`admin`, `user`), jogosultságokat és az admin felhasználót. Minden új projektben add hozzá a `DatabaseSeeder.php` fájlhoz:
 
 ```php
-
-use Molitor\User\database\seeders\UserSeeder;
+use Molitor\User\Database\Seeders\UserSeeder;
 
 public function run(): void
 {
     $this->call([
-        // ...más seederek
         UserSeeder::class,
+        // ...további seederek
     ]);
 }
+```
+
+Ezután futtasd:
+
+```bash
+php artisan db:seed
 ```
 
 ### Fordítások
