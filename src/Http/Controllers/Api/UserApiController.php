@@ -62,6 +62,29 @@ class UserApiController extends Controller
     }
 
     #[OA\Get(
+        path: '/api/admin/user/users/count',
+        summary: 'Get total user count',
+        tags: ['Users'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'count', type: 'integer'),
+                    ]
+                )
+            ),
+        ]
+    )]
+    public function count(): JsonResponse
+    {
+        return response()->json([
+            'count' => User::query()->count(),
+        ]);
+    }
+
+    #[OA\Get(
         path: '/api/admin/user/users/select',
         summary: 'Search users for select inputs',
         tags: ['Users'],

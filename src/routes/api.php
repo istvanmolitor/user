@@ -27,6 +27,7 @@ Route::prefix('admin/user')
     ->name('user.')
     ->group(function () {
         // Users
+        Route::get('users/count', [UserApiController::class, 'count'])->name('users.count');
         Route::get('users/select', [UserApiController::class, 'select'])->name('users.select');
         Route::get('users/create', [UserApiController::class, 'create'])
             ->middleware('permission:user_create')
