@@ -21,7 +21,7 @@ class UserSearch extends AdminSearch
                 id: $user->id,
                 title: $user->name ?? $user->email,
                 subtitle: $user->email,
-                url: "/admin/user/users/{$user->id}",
+                url: "/admin/user/{$user->id}/edit",
             ));
     }
 }
