@@ -16,4 +16,11 @@ return [
     'register_button' => 'Registrieren',
     'already_registered' => 'Bereits registriert?',
     'no_account' => 'Noch kein Konto?',
+    'profile_title' => 'Profil',
+    'profile_update_button' => 'Profil speichern',
+    'profile_updated' => 'Profil erfolgreich aktualisiert.',
+    'change_password_title' => 'Passwort ändern',
+    'new_password' => 'Neues Passwort',
+    'change_password_button' => 'Passwort ändern',
+    'password_updated' => 'Passwort erfolgreich aktualisiert.',
 ];

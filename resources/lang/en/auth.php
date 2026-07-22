@@ -21,4 +21,11 @@ return [
     'send_reset_link' => 'Send Password Reset Link',
     'reset_password_button' => 'Reset Password',
     'email_placeholder' => 'Enter your email address',
+    'profile_title' => 'Profile',
+    'profile_update_button' => 'Save Profile',
+    'profile_updated' => 'Profile updated successfully.',
+    'change_password_title' => 'Change Password',
+    'new_password' => 'New Password',
+    'change_password_button' => 'Change Password',
+    'password_updated' => 'Password updated successfully.',
 ];

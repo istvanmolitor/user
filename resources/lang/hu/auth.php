@@ -21,4 +21,11 @@ return [
     'send_reset_link' => 'Jelszó-visszaállító link küldése',
     'reset_password_button' => 'Jelszó visszaállítása',
     'email_placeholder' => 'Add meg az e-mail címed',
+    'profile_title' => 'Profil',
+    'profile_update_button' => 'Profil mentése',
+    'profile_updated' => 'A profil adatai sikeresen frissítve.',
+    'change_password_title' => 'Jelszó módosítása',
+    'new_password' => 'Új jelszó',
+    'change_password_button' => 'Jelszó módosítása',
+    'password_updated' => 'A jelszó sikeresen frissítve.',
 ];
