@@ -3,6 +3,7 @@
 return [
     'failed' => 'Ezek a hitelesítő adatok nem egyeznek a nyilvántartásunkkal.',
     'throttle' => 'Túl sok bejelentkezési kísérlet. Kérjük, próbálja újra :seconds másodperc múlva.',
+    'logout' => 'Kijelentkezés',
     'logged_out' => 'Sikeresen kijelentkezve.',
     'logged_in' => 'Sikeresen bejelentkezve.',
     'login_title' => 'Bejelentkezés',
