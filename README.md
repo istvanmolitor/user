@@ -7,6 +7,15 @@ This package provides user management functionality with both Filament and Inert
 - Laravel 11+
 - **Laravel Sanctum ^4.0** - Required for API authentication and token management
 
+## Függőségek
+
+- `laravel/sanctum` `^4.0` – https://github.com/laravel/sanctum
+  API autentikáció és token kezelés.
+- `istvanmolitor/admin` – git@github.com:istvanmolitor/admin.git
+  Az admin felületi integrációhoz (Filament/Inertia admin oldalak).
+- `istvanmolitor/menu` – git@github.com:istvanmolitor/menu.git
+  A `UserMenuBuilder` az admin menübe illeszti a felhasználók/csoportok/jogosultságok menüpontokat.
+
 ## Features
 
 - User management
